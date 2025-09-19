@@ -1,6 +1,0 @@
-rootProject.name = 'backend'
-
-include 'core'
-include 'user'
-include 'subscription'
-include 'admin'
