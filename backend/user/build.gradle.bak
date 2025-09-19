@@ -1,0 +1,31 @@
+plugins {
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
+    id 'java'
+}
+
+springBoot {
+    // 실제 package.name.MainClass 로 변경하세요
+    mainClass = 'com.farm2pot.user.UserMain'
+}
+
+dependencies {
+    implementation project(':core')
+
+    // 웹 API
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // DB 접속 (선택: JPA 사용 기준). MyBatis 사용 시 아래 주석 참조.
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+
+    // Redis (캐시 등)
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    // Kafka (메시지 사용 시)
+    implementation 'org.springframework.kafka:spring-kafka'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+}

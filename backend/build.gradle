@@ -1,0 +1,43 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.3.3' apply false
+    id 'io.spring.dependency-management' version '1.1.6' apply false
+}
+
+allprojects {
+    group = 'com.farm2pot'
+    version = '0.0.1-SNAPSHOT'
+
+    repositories {
+        mavenCentral()
+    }
+}
+
+subprojects {
+    // 공통 빌드 설정(플러그인 실제 적용은 각 모듈에서 제어)
+    apply plugin: 'java'
+    apply plugin: 'io.spring.dependency-management'
+
+    // Java toolchain (JDK 21)
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.boot:spring-boot-dependencies:3.3.3"
+        }
+    }
+
+    dependencies {
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    }
+
+    // 공통 컴파일 설정
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+        options.release.set(21)
+    }
+}

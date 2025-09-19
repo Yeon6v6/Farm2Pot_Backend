@@ -1,0 +1,27 @@
+plugins {
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
+    id 'java'
+}
+
+springBoot {
+    mainClass = 'farm2Pot.UserMain'
+}
+
+bootJar {
+    archiveBaseName.set("farm2Pot-user")  // 기본 이름 (user-service)
+    archiveVersion.set("")               // 버전 제거
+    archiveFileName.set("${archiveBaseName.get()}.jar") // 최종 파일명: user-service.jar
+}
+
+
+dependencies {
+    implementation project(':core')   // 공통 모듈 참조
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.kafka:spring-kafka'
+}

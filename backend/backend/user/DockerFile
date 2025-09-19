@@ -1,0 +1,13 @@
+FROM eclipse-temurin:21-jdk AS builder
+
+WORKDIR /app
+COPY ../.. .
+
+RUN ./gradlew :user:bootJar --no-daemon
+
+FROM eclipse-temurin:21-jdk
+
+WORKDIR /app
+COPY --from=builder /app/user/build/libs/farm2Pot-user.jar farm2Pot-user.jar
+
+ENTRYPOINT ["java", "-jar", "/app/farm2Pot-user.jar"]
