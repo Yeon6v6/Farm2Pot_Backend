@@ -132,6 +132,24 @@ services:
       - farm2Pot-network
     restart: unless-stopped
 
+# Frontend (development mode - Vite dev server with hot reload)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "5173:5173"
+    environment:
+      HOST: "0.0.0.0"
+    networks:
+      - farm2Pot-network
+    depends_on:
+      user:
+        condition: service_started
+    restart: unless-stopped
+
+
 volumes:
   mysql-8-data:
   redis_master_data:
