@@ -5,7 +5,7 @@ plugins {
 }
 
 allprojects {
-    group = 'com.farm2pot'
+    group = 'farm2pot'
     version = '0.0.1-SNAPSHOT'
 
     repositories {
@@ -14,11 +14,13 @@ allprojects {
 }
 
 subprojects {
-    // 공통 빌드 설정(플러그인 실제 적용은 각 모듈에서 제어)
     apply plugin: 'java'
     apply plugin: 'io.spring.dependency-management'
 
-    // Java toolchain (JDK 21)
+    group = rootProject.group
+    version = rootProject.version
+
+    // Java toolchain
     java {
         toolchain {
             languageVersion = JavaLanguageVersion.of(21)
@@ -32,12 +34,51 @@ subprojects {
     }
 
     dependencies {
-        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        // 공통 의존성
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        runtimeOnly 'com.mysql:mysql-connector-j'
+        implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+        compileOnly 'org.projectlombok:lombok:1.18.28'
+        annotationProcessor 'org.projectlombok:lombok:1.18.28'
     }
 
     // 공통 컴파일 설정
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'
         options.release.set(21)
+    }
+}
+
+// core 모듈
+project(":core") {
+    apply plugin: 'org.springframework.boot'
+}
+
+// user 모듈
+project(":user") {
+    apply plugin: 'org.springframework.boot'
+    dependencies {
+        implementation project(':core')
+        developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    }
+}
+
+// admin 모듈
+project(":admin") {
+    apply plugin: 'org.springframework.boot'
+    dependencies {
+        implementation project(':core')
+        developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    }
+}
+
+// subscription 모듈
+project(":subscription") {
+    apply plugin: 'org.springframework.boot'
+    dependencies {
+        implementation project(':core')
+        developmentOnly 'org.springframework.boot:spring-boot-devtools'
     }
 }

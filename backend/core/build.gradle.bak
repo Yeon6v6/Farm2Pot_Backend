@@ -1,7 +1,15 @@
 plugins {
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
     id 'java'
+}
+
+springBoot {
+    mainClass.set("farm2Pot.Main")
 }
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
+    // 웹 API
+    implementation 'org.springframework.boot:spring-boot-starter-web'
 }

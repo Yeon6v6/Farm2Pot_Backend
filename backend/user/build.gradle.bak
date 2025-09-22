@@ -5,9 +5,9 @@ plugins {
 }
 
 springBoot {
-    // 실제 package.name.MainClass 로 변경하세요
-    mainClass = 'com.farm2pot.user.UserMain'
+    mainClass.set("farm2Pot.UserMain")
 }
+
 
 dependencies {
     implementation project(':core')
@@ -23,7 +23,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
     // Kafka (메시지 사용 시)
-    implementation 'org.springframework.kafka:spring-kafka'
+//    implementation 'org.springframework.kafka:spring-kafka'
 
     // Lombok
     compileOnly 'org.projectlombok:lombok'
