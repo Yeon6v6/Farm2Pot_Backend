@@ -8,4 +8,8 @@ RUN npm install
 
 COPY . .
 
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+# mode 환경변수를 전달
+ARG MODE=production
+ENV VITE_MODE=${MODE}
+
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--mode", "${VITE_MODE}"]

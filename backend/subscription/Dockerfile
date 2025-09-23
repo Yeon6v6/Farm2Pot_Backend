@@ -1,3 +1,4 @@
+# SUBSCRIPTION
 # 1단계: 빌드
 FROM eclipse-temurin:21-jdk AS builder
 

@@ -98,6 +98,7 @@ services:
       - "8083:8083"
     environment:
       SPRING_PROFILES_ACTIVE: prod
+      SPRING_SERVER_PORT: 8083
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/farm2Pot
       SPRING_DATASOURCE_USERNAME: farm2Pot
       SPRING_DATASOURCE_PASSWORD: farm2Pot
@@ -124,6 +125,7 @@ services:
       - "8084:8084"   # 충돌 방지
     environment:
       SPRING_PROFILES_ACTIVE: prod
+      SPRING_SERVER_PORT: 8084
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/farm2Pot
       SPRING_DATASOURCE_USERNAME: farm2Pot
       SPRING_DATASOURCE_PASSWORD: farm2Pot
