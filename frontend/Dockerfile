@@ -8,8 +8,8 @@ RUN npm install
 
 COPY . .
 
-# mode 환경변수를 전달
-ARG MODE=production
-ENV VITE_MODE=${MODE}
+# build (옵션: 도커 빌드 시 미리 번들링)
+RUN npm run build
 
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--mode", "${VITE_MODE}"]
+# 실행 (개발 서버가 아니라 실제 production build를 서비스)
+CMD ["sh", "-c", "npm run dev -- --host 0.0.0.0 --mode ${VITE_MODE}"]

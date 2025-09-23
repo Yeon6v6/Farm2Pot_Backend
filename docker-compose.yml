@@ -151,8 +151,8 @@ services:
     ports:
       - "5173:5173"   # 로컬 호스트와 매핑
     environment:
-      HOST: "0.0.0.0"
-      PORT: "5173"
+      # 실행 모드 지정
+      VITE_MODE: "production"
     networks:
       - farm2Pot-network
     depends_on:
