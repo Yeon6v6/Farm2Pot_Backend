@@ -61,7 +61,7 @@ services:
       retries: 10
 
   # User Service
-  user:
+  user-service:
     build: 
       context: ./backend
       dockerfile: user/Dockerfile
@@ -89,7 +89,7 @@ services:
     restart: unless-stopped
 
   # Subscription Service
-  subscription:
+  subscription-service:
     build: 
       context: ./backend
       dockerfile: subscription/Dockerfile
@@ -115,7 +115,7 @@ services:
     restart: unless-stopped
 
   # Admin Service
-  admin:
+  admin-service:
     build: 
       context: ./backend
       dockerfile: admin/Dockerfile
