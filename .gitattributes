@@ -1,0 +1,2 @@
+# 모든 텍스트 파일은 체크아웃 시 LF 사용
+* text=auto eol=lf
