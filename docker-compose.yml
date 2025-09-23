@@ -156,7 +156,7 @@ services:
     networks:
       - farm2Pot-network
     depends_on:
-      user:
+      user-service:
         condition: service_started
     restart: unless-stopped
 
