@@ -69,12 +69,16 @@ services:
     ports:
       - "8082:8082"
     environment:
-      SPRING_PROFILES_ACTIVE: docker
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_SERVER_PORT: 8082
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/farm2Pot
       SPRING_DATASOURCE_USERNAME: farm2Pot
       SPRING_DATASOURCE_PASSWORD: farm2Pot
+      SPRING_DATASOURCE_HOST: mysql
+      SPRING_FRONTEND_HOST: frontend
       SPRING_REDIS_HOST: redis-master
       SPRING_REDIS_PORT: 6379
+      
     depends_on:
       mysql:
         condition: service_healthy
@@ -93,10 +97,12 @@ services:
     ports:
       - "8083:8083"
     environment:
-      SPRING_PROFILES_ACTIVE: docker
+      SPRING_PROFILES_ACTIVE: prod
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/farm2Pot
       SPRING_DATASOURCE_USERNAME: farm2Pot
       SPRING_DATASOURCE_PASSWORD: farm2Pot
+      SPRING_DATASOURCE_HOST: mysql
+      SPRING_FRONTEND_HOST: frontend
       SPRING_REDIS_HOST: redis-master
       SPRING_REDIS_PORT: 6379
     depends_on:
@@ -117,10 +123,12 @@ services:
     ports:
       - "8084:8084"   # 충돌 방지
     environment:
-      SPRING_PROFILES_ACTIVE: docker
+      SPRING_PROFILES_ACTIVE: prod
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/farm2Pot
       SPRING_DATASOURCE_USERNAME: farm2Pot
       SPRING_DATASOURCE_PASSWORD: farm2Pot
+      SPRING_DATASOURCE_HOST: mysql
+      SPRING_FRONTEND_HOST: frontend
       SPRING_REDIS_HOST: redis-master
       SPRING_REDIS_PORT: 6379
     depends_on:
@@ -139,9 +147,10 @@ services:
       dockerfile: Dockerfile
     container_name: frontend
     ports:
-      - "5173:5173"
+      - "5173:5173"   # 로컬 호스트와 매핑
     environment:
       HOST: "0.0.0.0"
+      PORT: "5173"
     networks:
       - farm2Pot-network
     depends_on:
