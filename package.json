@@ -1,0 +1,24 @@
+{
+  "name": "farm2pot",
+  "private": true,
+  "version": "1.0.0",
+  "description": "This is a our Project for Study.",
+  "keywords": [
+    "farm2pot"
+  ],
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:admin": "npm run dev --workspace=admin",
+    "dev:user": "npm run dev --workspace=user",
+    "dev:subscribe": "npm run dev --workspace=subscribe",
+    "build:admin": "npm run build --workspace=admin",
+    "build:user": "npm run build --workspace=user",
+    "build:subscribe": "npm run build --workspace=subscribe"
+  }
+}
