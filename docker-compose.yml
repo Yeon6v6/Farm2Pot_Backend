@@ -64,7 +64,7 @@ services:
   user-service:
     build: 
       context: ./backend
-      dockerfile: user/Dockerfile
+      dockerfile: apps/user/Dockerfile
     container_name: user-service
     ports:
       - "8082:8082"
@@ -92,7 +92,7 @@ services:
   subscription-service:
     build: 
       context: ./backend
-      dockerfile: subscription/Dockerfile
+      dockerfile: apps/subscription/Dockerfile
     container_name: subscription-service
     ports:
       - "8083:8083"
@@ -119,7 +119,7 @@ services:
   admin-service:
     build: 
       context: ./backend
-      dockerfile: admin/Dockerfile
+      dockerfile: apps/admin/Dockerfile
     container_name: admin-service
     ports:
       - "8084:8084"   # 충돌 방지
