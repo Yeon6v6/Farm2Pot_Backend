@@ -1,6 +1,5 @@
 rootProject.name = 'backend'
-
-include 'core'
-include 'user'
-include 'subscription'
-include 'admin'
+include 'apps:core'
+include 'apps:user'
+include 'apps:subscription'
+include 'apps:admin'
