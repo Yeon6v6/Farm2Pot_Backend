@@ -1,0 +1,31 @@
+# GATEWAY PROD - backend server port
+server:
+  port: ${SERVER_PORT}
+
+spring:
+  application:
+    name: gateway-service
+
+# Route 설정
+routes:
+  core:
+    url: ${CORE_SERVICE_URL}
+    path: /api/core/**
+  user:
+    url: ${USER_SERVICE_URL}
+    path: /api/user/**
+  admin:
+    url: ${ADMIN_SERVICE_URL}
+    path: /api/admin/**
+  subscription:
+    url: ${SUBSCRIPTION_SERVICE_URL}
+    path: /api/subscription/**
+
+# frontend server host
+frontend:
+  host: ${SPRING_FRONTEND_HOST}
+
+logging:
+  level:
+    com.farm2pot: ${LOGGING_LEVEL_COM_FARM2POT}
+    org.springframework: ${LOGGING_LEVEL_ORG_SPRINGFRAMEWORK}

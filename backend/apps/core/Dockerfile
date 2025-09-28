@@ -15,7 +15,7 @@ FROM eclipse-temurin:21-jdk
 WORKDIR /app
 
 # 빌드된 JAR 복사
-COPY --from=builder /app/apps/core/build/libs/*.jar farm2Pot-core.jar
+COPY --from=builder /app/apps/core/build/libs/*.jar farm2pot-core.jar
 
 # 실행
-ENTRYPOINT ["java", "-jar", "/app/farm2Pot-core.jar"]
+ENTRYPOINT ["java", "-jar", "/app/farm2pot-core.jar"]

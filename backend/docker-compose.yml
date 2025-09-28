@@ -6,13 +6,13 @@ services:
       - "23306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: farm2Pot
-      MYSQL_PASSWORD: farm2Pot
-      MYSQL_DATABASE: farm2Pot
+      MYSQL_USER: farm2pot
+      MYSQL_PASSWORD: farm2pot
+      MYSQL_DATABASE: farm2pot
     volumes:
       - mysql-8-data:/var/lib/mysql
     networks:
-      - farm2Pot-network
+      - farm2pot-network
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"]
       interval: 10s
@@ -22,7 +22,7 @@ services:
   # Redis Master
   redis-master:
     image: redis:7.0
-    container_name: redis-master
+    container_name: farm2pot-redis-master
     ports:
       - "26379:6379"
     volumes:
@@ -30,7 +30,7 @@ services:
     command: >
       redis-server --appendonly yes --save "" --latency-monitor-threshold 100
     networks:
-      - farm2Pot-network
+      - farm2pot-network
     healthcheck:
       test: ["CMD", "redis-cli", "-p", "6379", "PING"]
       interval: 5s
@@ -40,7 +40,7 @@ services:
   # Redis Readonly Replica
   redis-readonly:
     image: redis:7.0
-    container_name: redis-readonly
+    container_name: farm2pot-redis-readonly
     depends_on:
       redis-master:
         condition: service_healthy
@@ -53,41 +53,77 @@ services:
       --replicaof redis-master 6379 --replica-read-only yes \
       --latency-monitor-threshold 100
     networks:
-      - farm2Pot-network
+      - farm2pot-network
     healthcheck:
       test: ["CMD", "redis-cli", "-p", "6379", "PING"]
       interval: 5s
       timeout: 2s
       retries: 10
 
+  # Gateway Service
+  gateway-service:
+    build:
+      context: .
+      dockerfile: apps/gateway/Dockerfile
+    container_name: farm2pot-gateway-service
+    ports:
+      - "29080:9080"
+    environment:
+      SERVER_PORT: 9080
+      SPRING_APPLICATION_NAME: gateway-service
+      CORE_SERVICE_URL: http://core-service:8080
+      USER_SERVICE_URL: http://user-service:8081
+      ADMIN_SERVICE_URL: http://admin-service:8082
+      SUBSCRIPTION_SERVICE_URL: http://subscription-service:8083
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_FRONTEND_HOST: localhost
+      LOGGING_LEVEL_COM_FARM2POT: DEBUG
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK: WARN
+    volumes:
+      - ./config/gateway/:/app/farm2pot/config/gateway/
+    command: >
+      java -Dspring.config.location=/app/farm2pot/config/gateway/ -jar farm2pot-gateway.jar
+    depends_on:
+      - core-service
+      - user-service
+      - admin-service
+      - subscription-service
+    networks:
+      - farm2pot-network
+    restart: unless-stopped
+
   # Core Service
   core-service:
     build:
       context: .
       dockerfile: apps/core/Dockerfile
-    container_name: core-service
+    container_name: farm2pot-core-service
     ports:
-      - "18080:18080"
+      - "28080:8080"
     environment:
-      SERVER_PORT: 18080
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_SERVER_PORT: 8080
       SPRING_APPLICATION_NAME: core-service
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/farm2Pot
-      SPRING_DATASOURCE_USERNAME: farm2Pot
-      SPRING_DATASOURCE_PASSWORD: farm2Pot
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/farm2pot
+      SPRING_DATASOURCE_USERNAME: farm2pot
+      SPRING_DATASOURCE_PASSWORD: farm2pot
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
-      SPRING_DATA_REDIS_HOST: redis-master
-      SPRING_DATA_REDIS_PORT: 6379
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      SPRING_JPA_SHOW_SQL: false
+      SPRING_REDIS_HOST: redis-master
+      SPRING_REDIS_PORT: 6379
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       LOGGING_LEVEL_COM_FARM2POT: DEBUG
       LOGGING_LEVEL_ORG_SPRINGFRAMEWORK: WARN
+    volumes:
+      - ./config/core/:/app/farm2pot/config/core/
+    command: >
+      java -Dspring.config.location=/app/farm2pot/config/core/ -jar farm2pot-core.jar
     depends_on:
       mysql:
         condition: service_healthy
       redis-master:
         condition: service_healthy
     networks:
-      - farm2Pot-network
+      - farm2pot-network
     restart: unless-stopped
 
   # User Service
@@ -95,24 +131,30 @@ services:
     build:
       context: .
       dockerfile: apps/user/Dockerfile
-    container_name: user-service
+    container_name: farm2pot-user-service
     ports:
-      - "18081:18081"
+      - "28081:8081"
     environment:
-      SERVER_PORT: 18081
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_SERVER_PORT: 8081
       SPRING_APPLICATION_NAME: user-service
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/farm2Pot
-      SPRING_DATASOURCE_USERNAME: farm2Pot
-      SPRING_DATASOURCE_PASSWORD: farm2Pot
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/farm2pot
+      SPRING_DATASOURCE_USERNAME: farm2pot
+      SPRING_DATASOURCE_PASSWORD: farm2pot
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
-      SPRING_DATA_REDIS_HOST: redis-master
-      SPRING_DATA_REDIS_PORT: 6379
+      SPRING_REDIS_HOST: redis-master
+      SPRING_REDIS_PORT: 6379
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_JPA_SHOW_SQL: false
-      FARM2POT_CORE_SERVICE_URL: http://core-service:18080
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.MySQLDialect
+      FARM2POT_CORE_SERVICE_URL: http://core-service:8080
       LOGGING_LEVEL_COM_FARM2POT: DEBUG
       LOGGING_LEVEL_ORG_SPRINGFRAMEWORK: WARN
-
+    volumes:
+      - ./config/user/:/app/farm2pot/config/user/
+    command: >
+      java -Dspring.config.location=/app/farm2pot/config/user/ -jar farm2pot-user.jar
     depends_on:
       core-service:
         condition: service_started
@@ -121,7 +163,7 @@ services:
       redis-master:
         condition: service_healthy
     networks:
-      - farm2Pot-network
+      - farm2pot-network
     restart: unless-stopped
 
   # Subscription Service
@@ -129,29 +171,36 @@ services:
     build:
       context: .
       dockerfile: apps/subscription/Dockerfile
-    container_name: subscription-service
+    container_name: farm2pot-subscription-service
     ports:
-      - "18083:18083"
+      - "28083:8083"
     environment:
-      SERVER_PORT: 18083
+      SPRING_PROFILES_ACTIVE: prod
+      SERVER_PORT: 8083
       SPRING_APPLICATION_NAME: subscription-service
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/farm2Pot
-      SPRING_DATASOURCE_USERNAME: farm2Pot
-      SPRING_DATASOURCE_PASSWORD: farm2Pot
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/farm2pot
+      SPRING_DATASOURCE_USERNAME: farm2pot
+      SPRING_DATASOURCE_PASSWORD: farm2pot
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
       SPRING_DATA_REDIS_HOST: redis-master
       SPRING_DATA_REDIS_PORT: 6379
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_JPA_SHOW_SQL: false
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.MySQLDialect
       LOGGING_LEVEL_COM_FARM2POT: DEBUG
       LOGGING_LEVEL_ORG_SPRINGFRAMEWORK: WARN
+    volumes:
+      - ./config/subscription/:/app/farm2pot/config/subscription/
+    command: >
+      java -Dspring.config.location=/app/farm2pot/config/subscription/ -jar farm2pot-subscription.jar
     depends_on:
       mysql:
         condition: service_healthy
       redis-master:
         condition: service_healthy
     networks:
-      - farm2Pot-network
+      - farm2pot-network
     restart: unless-stopped
 
   # Admin Service
@@ -159,23 +208,30 @@ services:
     build:
       context: .
       dockerfile: apps/admin/Dockerfile
-    container_name: admin-service
+    container_name: farm2pot-admin-service
     ports:
-      - "18082:18082"
+      - "28082:8082"
     environment:
-      SERVER_PORT: 18082
+      SPRING_PROFILES_ACTIVE: prod
+      SERVER_PORT: 8082
       SPRING_APPLICATION_NAME: admin-service
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/farm2Pot
-      SPRING_DATASOURCE_USERNAME: farm2Pot
-      SPRING_DATASOURCE_PASSWORD: farm2Pot
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/farm2pot
+      SPRING_DATASOURCE_USERNAME: farm2pot
+      SPRING_DATASOURCE_PASSWORD: farm2pot
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
       SPRING_DATA_REDIS_HOST: redis-master
       SPRING_DATA_REDIS_PORT: 6379
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_JPA_SHOW_SQL: false
-      FARM2POT_CORE_SERVICE_URL: http://core-service:18080
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.MySQLDialect
+      FARM2POT_CORE_SERVICE_URL: http://core-service:8080
       LOGGING_LEVEL_COM_FARM2POT: DEBUG
       LOGGING_LEVEL_ORG_SPRINGFRAMEWORK: WARN
+    volumes:
+      - ./config/admin/:/app/farm2pot/config/admin/
+    command: >
+      java -Dspring.config.location=/app/farm2pot/config/admin/ -jar farm2pot-admin.jar
     depends_on:
       core-service:
         condition: service_started
@@ -184,27 +240,8 @@ services:
       redis-master:
         condition: service_healthy
     networks:
-      - farm2Pot-network
+      - farm2pot-network
     restart: unless-stopped
-
-# Frontend (development mode - Vite dev server with hot reload)
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: frontend
-    ports:
-      - "5173:5173"   # 로컬 호스트와 매핑
-    environment:
-      # 실행 모드 지정
-      VITE_MODE: "production"
-    networks:
-      - farm2Pot-network
-    depends_on:
-      user-service:
-        condition: service_started
-    restart: unless-stopped
-
 
 volumes:
   mysql-8-data:
@@ -212,5 +249,5 @@ volumes:
   redis_readonly_data:
 
 networks:
-  farm2Pot-network:
+  farm2pot-network:
     driver: bridge

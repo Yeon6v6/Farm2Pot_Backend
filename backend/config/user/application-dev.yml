@@ -4,9 +4,9 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:13306/farm2Pot
-    username: farm2Pot
-    password: farm2Pot
+    url: jdbc:mysql://localhost:13306/farm2pot
+    username: farm2pot
+    password: farm2pot
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:

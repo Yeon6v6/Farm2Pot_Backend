@@ -58,7 +58,6 @@ subprojects {
     }
 
     dependencies {
-        implementation 'org.springframework.boot:spring-boot-starter-security'
         implementation 'org.springframework.boot:spring-boot-starter-web'
 
         compileOnly 'org.projectlombok:lombok'
@@ -211,5 +210,34 @@ project(":apps:subscription") {
     }
     springBoot {
         mainClass = 'com.farm2pot.SubscriptionApplication'
+    }
+}
+
+// gateway 모듈
+project(":apps:gateway") {
+    apply plugin: 'org.springframework.boot'
+    bootJar {
+        archiveBaseName.set('gateway')
+        archiveVersion.set(version as String)
+        archiveClassifier.set('')
+    }
+
+    // Gateway 전용 의존성
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-security'
+    }
+
+    // Gateway는 라우팅만 하므로 JPA 관련 의존성 제외
+    configurations {
+        implementation.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-data-jpa'
+        implementation.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-data-redis'
+        implementation.exclude group: 'mysql', module: 'mysql-connector-java'
+        implementation.exclude group: 'org.mariadb.jdbc', module: 'mariadb-java-client'
+        implementation.exclude group: 'com.querydsl'
+        implementation.exclude group: 'com.github.gavlyukovskiy', module: 'p6spy-spring-boot-starter'
+    }
+
+    springBoot {
+        mainClass = 'com.farm2pot.GatewayApplication'
     }
 }
