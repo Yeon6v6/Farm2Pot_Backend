@@ -2,6 +2,17 @@
 server:
   port: 19080
 
+# frontend server host
+frontend:
+  user-host: localhost:14001
+  admin-host: localhost:14002
+
+# project
+farm2pot:
+  core-service:
+    url: http://localhost:18080
+
+# Spring
 spring:
   application:
     name: gateway-service
@@ -20,10 +31,6 @@ routes:
   subscription:
     url: http://localhost:18083
     path: /api/subscription/**
-
-# frontend server host
-frontend:
-  host: localhost
 
 logging:
   level:

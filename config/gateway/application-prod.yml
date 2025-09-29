@@ -2,6 +2,12 @@
 server:
   port: ${SERVER_PORT}
 
+# frontend server host
+frontend:
+  user-host: ${SPRING_FRONTEND_USER_HOST}
+  admin-host: ${SPRING_FRONTEND_ADMIN_HOST}
+
+# Spring
 spring:
   application:
     name: gateway-service
@@ -20,10 +26,6 @@ routes:
   subscription:
     url: ${SUBSCRIPTION_SERVICE_URL}
     path: /api/subscription/**
-
-# frontend server host
-frontend:
-  host: ${SPRING_FRONTEND_HOST}
 
 logging:
   level:
