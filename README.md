@@ -2,11 +2,11 @@
 
 | 구분 | 기능 | Method | Endpoint | 상세 설명 |
 |------|------|--------|----------|------------|
-| 인증 | 회원가입 | POST | `/api/users` | 사용자 계정 생성 (이름, 연락처, 비밀번호 등). |
+| 인증 | 회원가입 | POST | `/api/register` | 사용자 계정 생성 (이름, 연락처, 비밀번호 등). |
 | 인증 | 로그인 | POST | `/api/auth/login` | JWT 발급을 위한 로그인 및 인증. |
 | 인증 | 토큰 재발급 | POST | `/api/auth/reissue` | Refresh Token을 사용하여 Access Token 재발급. |
-| 프로필 | 내 정보 조회 | GET | `/api/users/me` | 현재 로그인된 사용자의 기본 프로필 정보 조회. |
-| 프로필 | 프로필 수정 | PUT | `/api/users/me` | 이름, 연락처 등 프로필 정보 수정. |
+| 프로필 | 내 정보 조회 | GET | `/api/user/{userId}` | 현재 로그인된 사용자의 기본 프로필 정보 조회. |
+| 프로필 | 프로필 수정 | PUT | `/api/user/{userId}` | 이름, 연락처 등 프로필 정보 수정. |
 | 배송지 관리 | 배송지 관리 | GET/POST/PUT/DELETE | `/api/users/me/addresses` | 등록된 배송지 목록 조회 및 관리. |
 
 ---
