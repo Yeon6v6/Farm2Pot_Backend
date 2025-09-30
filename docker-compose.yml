@@ -156,8 +156,6 @@ services:
     command: >
       java -Dspring.config.location=/app/farm2pot/config/user/ -jar farm2pot-user.jar
     depends_on:
-      core-service:
-        condition: service_started
       mysql:
         condition: service_healthy
       redis-master:
@@ -233,8 +231,6 @@ services:
     command: >
       java -Dspring.config.location=/app/farm2pot/config/admin/ -jar farm2pot-admin.jar
     depends_on:
-      core-service:
-        condition: service_started
       mysql:
         condition: service_healthy
       redis-master:

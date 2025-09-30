@@ -10,7 +10,7 @@ farm2pot:
 # Spring
 spring:
   datasource:
-    url: jdbc:mysql://localhost:23306/farm2pot
+    url: jdbc:mysql://localhost:23306/farm2pot?allowPublicKeyRetrieval=true&useSSL=false
     username: farm2pot
     password: farm2pot
     driver-class-name: com.mysql.cj.jdbc.Driver

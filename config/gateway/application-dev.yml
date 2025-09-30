@@ -30,7 +30,7 @@ routes:
     path: /api/admin/**
   subscription:
     url: http://localhost:18083
-    path: /api/subscription/**
+    path: /api/subs/**
 
 logging:
   level:

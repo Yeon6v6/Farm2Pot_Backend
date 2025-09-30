@@ -14,11 +14,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins(
-                        "http://" + frontendHost + ":5173",
-                        "http://localhost:4000",
-                        "http://localhost:4001",
-                        "http://localhost:3000"
+                .allowedOrigins( /* 4001 : user, 4002 : admin */
+                        // prod
+                        "http://user-service:4001",
+                        "http://admin-service:4002",
+                        // dev
+                        "http://localhost:14001",
+                        "http://localhost:14002"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                 .allowedHeaders("*")
