@@ -1,12 +1,18 @@
 package com.farm2pot.controller;
 
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
-import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @RestController
@@ -25,93 +31,100 @@ public class GatewayController {
     @Value("${routes.subscription.url:http://subscription-service:8083}")
     private String subscriptionServiceUrl;
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private WebClient webClient;
+
+    @PostConstruct
+    public void init() {
+        this.webClient = WebClient.builder()
+                .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+                .build();
+    }
 
     @GetMapping("/health")
-    public Map<String, Object> health() {
-        return Map.of(
+    public Mono<Map<String, Object>> health() {
+        return Mono.just(Map.of(
                 "status", "UP",
                 "service", "gateway-service",
                 "timestamp", System.currentTimeMillis()
-        );
+        ));
     }
 
     @RequestMapping("/api/core/**")
-    public ResponseEntity<?> routeToCore(HttpServletRequest request, @RequestBody(required = false) Object body) {
+    public Mono<ResponseEntity<Object>> routeToCore(ServerHttpRequest request,
+                                               @RequestBody(required = false) Mono<String> body) {
         return routeRequest(coreServiceUrl, request, body);
     }
 
     @RequestMapping("/api/user/**")
-    public ResponseEntity<?> routeToUser(HttpServletRequest request, @RequestBody(required = false) Object body) {
+    public Mono<ResponseEntity<Object>> routeToUser(ServerHttpRequest request,
+                                               @RequestBody(required = false) Mono<String> body) {
         return routeRequest(userServiceUrl, request, body);
     }
 
     @RequestMapping("/api/admin/**")
-    public ResponseEntity<?> routeToAdmin(HttpServletRequest request, @RequestBody(required = false) Object body) {
+    public Mono<ResponseEntity<Object>> routeToAdmin(ServerHttpRequest request,
+                                                @RequestBody(required = false) Mono<String> body) {
         return routeRequest(adminServiceUrl, request, body);
     }
 
     @RequestMapping("/api/subs/**")
-    public ResponseEntity<?> routeToSubscription(HttpServletRequest request, @RequestBody(required = false) Object body) {
+    public Mono<ResponseEntity<Object>> routeToSubscription(ServerHttpRequest request,
+                                                       @RequestBody(required = false) Mono<String> body) {
         return routeRequest(subscriptionServiceUrl, request, body);
     }
 
-    private ResponseEntity<?> routeRequest(String targetUrl, HttpServletRequest request, Object body) {
+    private Mono<ResponseEntity<Object>> routeRequest(String targetUrl,
+                                                      ServerHttpRequest request,
+                                                      Mono<String> body) {
         try {
-            String path = request.getRequestURI();
-            String method = request.getMethod();
-            HttpMethod httpMethod = HttpMethod.valueOf(method);
+            String path = request.getURI().getPath();
+            HttpMethod httpMethod = request.getMethod();
+            if (httpMethod == null) {
+                return Mono.just(ResponseEntity.badRequest()
+                        .body(Map.of("error", "Invalid HTTP method")));
+            }
 
-            log.info("Routing {} {} to {}", method, path, targetUrl);
+            log.info("Routing {} {} -> {}", httpMethod.name(), path, targetUrl);
 
-            // 1. 모든 헤더 복사 (Header, Authorization, Cookie 등)
+            // 1. 헤더 복사
             HttpHeaders headers = new HttpHeaders();
-            request.getHeaderNames().asIterator().forEachRemaining(headerName -> {
-                // Content-Length와 Host 헤더는 RestTemplate이 자체 처리하므로 제외합니다.
-                if (!"content-length".equalsIgnoreCase(headerName) && !"host".equalsIgnoreCase(headerName)) {
-                    request.getHeaders(headerName).asIterator().forEachRemaining(headerValue -> {
-                        headers.add(headerName, headerValue);
-                    });
+            request.getHeaders().forEach(headers::addAll);
+
+            // 2. URL 조립
+            String query = request.getURI().getQuery();
+            String fullUrl = targetUrl + path + (query != null ? "?" + query : "");
+
+            // 3. WebClient 요청
+            WebClient.RequestBodySpec requestSpec = webClient.method(httpMethod)
+                    .uri(fullUrl)
+                    .headers(h -> h.addAll(headers));
+
+            Mono<String> requestBody = body.defaultIfEmpty("");
+
+            // 4. 모든 HTTP 메서드 처리
+            return requestBody.flatMap(reqBody -> {
+                WebClient.RequestHeadersSpec<?> spec;
+                if (httpMethod == HttpMethod.GET || httpMethod == HttpMethod.DELETE) {
+                    spec = requestSpec;
+                } else {
+                    spec = requestSpec.bodyValue(reqBody);
                 }
+
+                // 5. 응답 상태와 body 그대로 반환
+                return spec.exchangeToMono(clientResponse ->
+                        clientResponse.bodyToMono(Object.class)
+                                .map(responseBody ->
+                                        ResponseEntity.status(clientResponse.statusCode())
+                                                .headers(clientResponse.headers().asHttpHeaders())
+                                                .body(responseBody)
+                                )
+                );
             });
 
-            // 2. Content-Type 처리
-            String contentType = request.getContentType();
-            // 원본 Content-Type이 있다면 그대로 복사
-            if (contentType != null) {
-                headers.set(HttpHeaders.CONTENT_TYPE, contentType);
-            } else if (body != null && httpMethod != HttpMethod.GET && httpMethod != HttpMethod.HEAD && httpMethod != HttpMethod.OPTIONS) {
-                // Body가 있고, Body를 가질 수 있는 Method인데 Content-Type이 없다면 기본 JSON으로 설정
-                headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-            }
-
-            // 3. HTTP Method에 따른 Entity (Body) 구성
-            HttpEntity<?> entity;
-            // GET/HEAD/OPTIONS 요청은 Body가 없으므로 Headers만 담아 전달
-            if (httpMethod == HttpMethod.GET || httpMethod == HttpMethod.HEAD || httpMethod == HttpMethod.OPTIONS) {
-                entity = new HttpEntity<>(headers);
-            }
-            // POST, PUT, DELETE, PATCH 등: Body와 Headers를 함께 전달
-            else {
-                // @RequestBody(required = false) Object body로 받은 본문을 그대로 사용합니다. (null일 수도 있음)
-                entity = new HttpEntity<>(body, headers);
-            }
-
-            // 4. URL 구성: Path Variable 및 Query Parameter 처리
-            String queryString = request.getQueryString();
-            String fullUrl = targetUrl + path + (queryString != null ? "?" + queryString : "");
-
-            // 5. 요청 전달
-            return restTemplate.exchange(
-                    fullUrl,
-                    httpMethod,
-                    entity,
-                    Object.class
-            );
         } catch (Exception e) {
             log.error("Error routing request: ", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "Gateway routing failed: " + e.getMessage()));
+            return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Gateway routing failed: " + e.getMessage())));
         }
     }
 }

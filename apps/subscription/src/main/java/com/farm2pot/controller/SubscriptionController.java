@@ -1,5 +1,6 @@
 package com.farm2pot.controller;
 
+import com.farm2pot.common.response.ResponseMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,11 +16,12 @@ import java.util.Map;
 public class SubscriptionController {
 
     @GetMapping("/health")
-    public Map<String, Object> health() {
-        return Map.of(
-                "status", "UP",
-                "service", "subscription-service",
-                "timestamp", System.currentTimeMillis()
+    public ResponseMessage health() {
+        return ResponseMessage.success(Map.of(
+                        "status", "UP",
+                        "service", "subscription-service",
+                        "timestamp", System.currentTimeMillis()
+                )
         );
     }
 }

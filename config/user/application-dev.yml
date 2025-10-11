@@ -22,7 +22,13 @@ spring:
 
   redis:
     host: localhost
-    port: 16379
+    port: 26379
+
+jwt:
+  security:
+    key: 6rCA7J6Q6rOgIO2GoOydtO2UhOuhnOygne2KuCBqd3Qgc2VjcmV0IO2CpOyeheuLiOuLpA==
+    expiration: 360000   # 1시간 (단위: 밀리초)
+    refresh-expiration: 360000 # 테스트를 위해 360000    1209600000  # 2주 (선택)
 
 kafka:
   bootstrap-servers: localhost:19092
