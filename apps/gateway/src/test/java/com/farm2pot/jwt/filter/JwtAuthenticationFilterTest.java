@@ -1,6 +1,6 @@
 package com.farm2pot.jwt.filter;
 
-import com.farm2pot.jwt.service.JwtProvider;
+import com.farm2pot.security.service.JwtProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

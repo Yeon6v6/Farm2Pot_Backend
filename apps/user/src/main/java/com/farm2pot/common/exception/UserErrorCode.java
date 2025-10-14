@@ -25,6 +25,8 @@ public enum UserErrorCode implements BaseErrorCode {
     DUPLICATE_EMAIL(HttpStatus.CONFLICT, "USER_002", "이미 등록된 이메일입니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_003", "해당 사용자를 찾을 수 없습니다."),
 
+    /* 사용자 관련 */
+    INVALID_PASASWORD(HttpStatus.UNAUTHORIZED, "USER_004", "비밀번호가 올바르지 않습니다."),
     /* 시스템 관련 */
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "SYS_001", "서버 내부 오류가 발생했습니다.");
 

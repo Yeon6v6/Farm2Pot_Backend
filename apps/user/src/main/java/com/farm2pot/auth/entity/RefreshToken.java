@@ -14,6 +14,7 @@ import java.time.Instant;
 @Entity
 @Table(name = "refresh_tokens")
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder

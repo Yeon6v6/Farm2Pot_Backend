@@ -26,7 +26,7 @@ spring:
 jwt:
   security:
     key: 6rCA7J6Q6rOgIO2GoOydtO2UhOuhnOygne2KuCBqd3Qgc2VjcmV0IO2CpOyeheuLiOuLpA==
-    whitelist:
+    whiteList:
       - /api/user/auth/**
       - /api/test/**
 
