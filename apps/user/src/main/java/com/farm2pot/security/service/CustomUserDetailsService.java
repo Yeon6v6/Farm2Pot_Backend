@@ -29,17 +29,17 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
         try {
-            User user = userRepository.findByLoginId(username)
-                    .orElseThrow(() -> new UsernameNotFoundException(username));
+            User user = userRepository.findById(Long.parseLong(id))
+                    .orElseThrow(() -> new UsernameNotFoundException(id));
 
-            log.info("✅ User authenticated successfully: {}", username);
+            log.info("✅ User authenticated successfully! ID : {} name : {}", id, user.getName());
 
             return new CustomUserDetails(user);
 
         } catch (UsernameNotFoundException e) {
-            log.warn("⚠️ User not found during authentication: {}", username);
+            log.warn("⚠️ User not found during authentication: {}", id);
             throw new UsernameNotFoundException(e.getMessage(), e);
 
         } catch (Exception e) {

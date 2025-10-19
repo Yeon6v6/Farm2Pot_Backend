@@ -27,8 +27,11 @@ public class UserAddress {
     private Long id;
 
     // 사용자 엔티티와 ManyToOne 관계
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(
+            name = "id",
+            nullable = false,
+            foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)
+    )
     private User user;
 
     @Column(name = "recipient_name", length = 100)

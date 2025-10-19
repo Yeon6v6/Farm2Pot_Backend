@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-10-14T19:04:12+0900",
+    date = "2025-10-19T00:46:17+0900",
     comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.8 (Microsoft)"
 )
 @Component
@@ -24,8 +24,8 @@ public class RefreshTokenMapperImpl implements RefreshTokenMapper {
         if ( arg0.getToken() != null ) {
             refreshToken.token( arg0.getToken() );
         }
-        if ( arg0.getLoginId() != null ) {
-            refreshToken.loginId( arg0.getLoginId() );
+        if ( arg0.getUserId() != null ) {
+            refreshToken.userId( arg0.getUserId() );
         }
         if ( arg0.getExpiryDate() != null ) {
             refreshToken.expiryDate( arg0.getExpiryDate() );
@@ -48,8 +48,8 @@ public class RefreshTokenMapperImpl implements RefreshTokenMapper {
         if ( arg0.getToken() != null ) {
             refreshTokenDto.token( arg0.getToken() );
         }
-        if ( arg0.getLoginId() != null ) {
-            refreshTokenDto.loginId( arg0.getLoginId() );
+        if ( arg0.getUserId() != null ) {
+            refreshTokenDto.userId( arg0.getUserId() );
         }
         if ( arg0.getExpiryDate() != null ) {
             refreshTokenDto.expiryDate( arg0.getExpiryDate() );
@@ -70,8 +70,8 @@ public class RefreshTokenMapperImpl implements RefreshTokenMapper {
         if ( arg0.getToken() != null ) {
             arg1.setToken( arg0.getToken() );
         }
-        if ( arg0.getLoginId() != null ) {
-            arg1.setLoginId( arg0.getLoginId() );
+        if ( arg0.getUserId() != null ) {
+            arg1.setUserId( arg0.getUserId() );
         }
         if ( arg0.getExpiryDate() != null ) {
             arg1.setExpiryDate( arg0.getExpiryDate() );

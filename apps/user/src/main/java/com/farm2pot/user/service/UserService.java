@@ -40,11 +40,14 @@ public class UserService {
     /**
      * 로그아웃 (Refresh Token 제거)
      */
+    @Transactional
     public void logout(String loginId) {
         if (loginId == null || loginId.isBlank()) {
             throw new UserException(USER_NOT_FOUND);
         }
-        refreshTokenRepository.deleteByLoginId(loginId);
+        User user = userRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
+        refreshTokenRepository.deleteByUserId(user.getId());
     }
 
     /**
@@ -73,7 +76,8 @@ public class UserService {
     public User editUserInfo(UserDto userDto) {
         User user = userRepository.findByLoginId(userDto.getLoginId())
                 .orElseThrow(() -> new UserException(USER_NOT_FOUND));
-
+        String password = encodePassword(userDto.getPassword());
+        userDto.setPassword(password);
         userMapper.updateEntityFromDto(
                 userDto, user);
         return user;
@@ -87,6 +91,10 @@ public class UserService {
         return Optional.of(passwordEncoder.matches(newPassword, oldPassword))
                 .filter(result -> result) // true일 때만 통과
                 .orElseThrow(() -> new UserException(INVALID_PASASWORD));
+    }
+
+    public String encodePassword (String password) {
+        return passwordEncoder.encode(password);
     }
 }
 

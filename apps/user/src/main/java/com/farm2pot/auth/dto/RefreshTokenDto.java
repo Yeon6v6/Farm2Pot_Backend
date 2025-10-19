@@ -19,6 +19,6 @@ import java.time.Instant;
 public class RefreshTokenDto {
     private Long id;
     private String token;
-    private String loginId;
+    private Long userId;
     private Instant expiryDate;
 }

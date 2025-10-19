@@ -57,11 +57,11 @@ public class AuthService {
         }
 
         // 3. 사용자 정보 확인
-        User user = userRepository.findByLoginId(tokenEntity.getLoginId())
+        User user = userRepository.findById(tokenEntity.getUserId())
                 .orElseThrow(() -> new UserException(USER_NOT_FOUND));
 
         // 4. 새 Access Token 발급
-        String newAccessToken = jwtProvider.generateAccessToken(user.getLoginId(), user.getRoles());
+        String newAccessToken = jwtProvider.generateAccessToken(user.getId(), user.getRoles());
 
         return new UserLoginTokenResponse(newAccessToken, request.getToken(), userMapper.toDto(user));
     }
@@ -80,13 +80,13 @@ public class AuthService {
         }
 
         // 3. Access Token & Refresh Token 발급
-        String accessToken = jwtProvider.generateAccessToken(user.getLoginId(), user.getRoles());
-        String refreshToken = jwtProvider.generateRefreshToken(user.getLoginId());
+        String accessToken = jwtProvider.generateAccessToken(user.getId(), user.getRoles());
+        String refreshToken = jwtProvider.generateRefreshToken(user.getId());
 
         // 4. Refresh Token 저장
         RefreshTokenDto dto = RefreshTokenDto.builder()
                 .token(refreshToken)
-                .loginId(user.getLoginId())
+                .userId(user.getId())
                 .expiryDate(Instant.now().plusMillis(604800000)) // 7일
                 .build();
 
@@ -99,8 +99,13 @@ public class AuthService {
     /**
      * 회원가입
      */
+    @Transactional
     public void register(UserDto userDto){
+        String password = passwordEncoder.encode(userDto.getPassword());
+        userDto.setPassword(password);
         User user = userMapper.toEntity(userDto);
+
+        userRepository.save(user);
     }
 
     public void init() {
