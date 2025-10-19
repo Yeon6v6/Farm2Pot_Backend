@@ -1,6 +1,7 @@
 package com.farm2pot.jwt.filter;
 
 import com.farm2pot.security.service.JwtProvider;
+import org.apache.ibatis.logging.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -27,14 +28,14 @@ public class JwtAuthenticationFilterTest {
     private ReactiveStringRedisTemplate redisTemplate;
 
     private String validToken;
-    private String loginId = "testuser";
+    private Long id = 1L;
 
     @BeforeEach
     void setUp() {
         validToken = "valid.jwt.token";
 
         Mockito.when(jwtProvider.validateToken(validToken)).thenReturn(true);
-        Mockito.when(jwtProvider.getLoginId(validToken)).thenReturn(loginId);
+        Mockito.when(jwtProvider.getId(validToken)).thenReturn(id.toString());
         Mockito.when(jwtProvider.getRoles(validToken)).thenReturn(List.of("ROLE_USER"));
 
         Mockito.when(redisTemplate.hasKey("BL:" + validToken)).thenReturn(Mono.just(false));
