@@ -1,10 +1,12 @@
 package com.farm2pot.auth.controller;
 
 import com.farm2pot.auth.dto.RefreshTokenDto;
+import com.farm2pot.auth.dto.RegisterRequestDTO;
 import com.farm2pot.auth.service.AuthService;
 import com.farm2pot.common.response.ResponseMessage;
 import com.farm2pot.user.dto.UserDto;
 import com.farm2pot.user.dto.UserLoginTokenResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -31,18 +33,21 @@ public class AuthController {
     // 로그인
     @PostMapping("/login")
     public ResponseMessage<UserLoginTokenResponse> login(
-            @RequestBody @Validated UserDto request
+            @RequestBody @Validated UserDto request, HttpServletResponse response
     ) {
-        return ResponseMessage.success("login success", authService.login(request));
+
+        UserLoginTokenResponse loginResponse = authService.login(request);
+        response.setHeader("X-USER-ID", loginResponse.getUserId().toString());
+        return ResponseMessage.success("login success", loginResponse);
     }
 
     // 회원가입
     @PostMapping("/register")
     public ResponseMessage<String> register(
-            @RequestBody @Validated UserDto request
+            @RequestBody @Validated RegisterRequestDTO request // TODO : -> 회원가입용 requestDTO 추가해야 함.
     ) {
         authService.register(request); // 실제 회원가입 처리
-        return ResponseMessage.success("join success", null);
+        return ResponseMessage.success("join success", "");
     }
 
 

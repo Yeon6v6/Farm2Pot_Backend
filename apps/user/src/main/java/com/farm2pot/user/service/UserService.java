@@ -63,9 +63,6 @@ public class UserService {
      * 사용자 정보 조회 (id)
      */
     public User findById(Long id) {
-        if (id == null ) {
-            throw new UserException(USER_NOT_FOUND);
-        }
         return userRepository.findById(id).orElseThrow(() -> new UserException(USER_NOT_FOUND));
     }
 

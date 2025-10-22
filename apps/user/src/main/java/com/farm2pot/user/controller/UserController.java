@@ -31,12 +31,17 @@ public class UserController {
     @DeleteMapping("/logout")
     public ResponseMessage<String> logout(@RequestParam("loginId") String loginId ) {
         userService.logout(loginId);
-        return ResponseMessage.success("logout success", null);
+        return ResponseMessage.success("logout success", "");
     }
 
     // 사용자 정보 수정
     @PostMapping("/edit")
     public ResponseMessage<User> editUser(@RequestBody @Validated UserDto request) {
         return ResponseMessage.success("editUser success", userService.editUserInfo(request));
+    }
+
+    @GetMapping("/userinfo/{loginId}")
+    public ResponseMessage<User> getUserInfo(@RequestParam @Validated UserDto request) {
+        return ResponseMessage.success("select User Info", userService.findByLoginId(request.getLoginId()));
     }
 }

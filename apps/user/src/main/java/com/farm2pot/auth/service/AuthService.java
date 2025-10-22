@@ -2,6 +2,7 @@ package com.farm2pot.auth.service;
 
 
 import com.farm2pot.auth.dto.RefreshTokenDto;
+import com.farm2pot.auth.dto.RegisterRequestDTO;
 import com.farm2pot.user.dto.*;
 import com.farm2pot.auth.entity.RefreshToken;
 import com.farm2pot.user.entity.User;
@@ -63,7 +64,7 @@ public class AuthService {
         // 4. 새 Access Token 발급
         String newAccessToken = jwtProvider.generateAccessToken(user.getId(), user.getRoles());
 
-        return new UserLoginTokenResponse(newAccessToken, request.getToken(), userMapper.toDto(user));
+        return new UserLoginTokenResponse(user.getId(), newAccessToken, request.getToken(), userMapper.toDto(user));
     }
 
     /**
@@ -93,14 +94,14 @@ public class AuthService {
         refreshTokenRepository.save(refreshTokenMapper.toEntity(dto));
 
         // 5. 결과 반환
-        return new UserLoginTokenResponse(accessToken, refreshToken, userMapper.toDto(user));
+        return new UserLoginTokenResponse(user.getId(), accessToken, refreshToken, userMapper.toDto(user));
     }
 
     /**
      * 회원가입
      */
     @Transactional
-    public void register(UserDto userDto){
+    public void register(RegisterRequestDTO userDto){
         String password = passwordEncoder.encode(userDto.getPassword());
         userDto.setPassword(password);
         User user = userMapper.toEntity(userDto);
