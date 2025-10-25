@@ -20,7 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
+import static com.farm2pot.common.exception.UserErrorCode.INTERNAL_SERVER_ERROR;
 import static com.farm2pot.common.exception.UserErrorCode.USER_NOT_FOUND;
 
 /**
@@ -107,6 +109,11 @@ public class AuthService {
         User user = userMapper.toEntity(userDto);
 
         userRepository.save(user);
+    }
+
+    // 전체 사용자 조회
+    public List<User> getAllUsers() {
+        return Optional.of(userRepository.findAll()).orElseThrow(() -> new UserException(INTERNAL_SERVER_ERROR));
     }
 
     public void init() {

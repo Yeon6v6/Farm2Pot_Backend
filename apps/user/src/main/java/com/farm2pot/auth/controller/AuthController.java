@@ -6,10 +6,13 @@ import com.farm2pot.auth.service.AuthService;
 import com.farm2pot.common.response.ResponseMessage;
 import com.farm2pot.user.dto.UserDto;
 import com.farm2pot.user.dto.UserLoginTokenResponse;
+import com.farm2pot.user.entity.User;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * packageName    : com.farm2pot.auth.controller
@@ -50,5 +53,9 @@ public class AuthController {
         return ResponseMessage.success("join success", "");
     }
 
+    @GetMapping("/users")
+    public ResponseMessage<List<User>> getAllUsers() {
+        return ResponseMessage.success("select All Users" , authService.getAllUsers());
+    }
 
 }

@@ -1,5 +1,6 @@
 package com.farm2pot.user.service;
 
+import com.farm2pot.common.exception.UserErrorCode;
 import com.farm2pot.common.exception.UserException;
 import com.farm2pot.security.service.JwtProvider;
 import com.farm2pot.user.dto.UserDto;
@@ -84,11 +85,18 @@ public class UserService {
     /**
      * 패스워드 체크
      */
-    public Boolean validatePassword(String oldPassword, String newPassword ) {
+    public boolean validatePassword(String oldPassword, String newPassword ) {
         return Optional.of(passwordEncoder.matches(newPassword, oldPassword))
                 .filter(result -> result) // true일 때만 통과
                 .orElseThrow(() -> new UserException(INVALID_PASASWORD));
     }
+
+    public boolean checkUser(UserDto userDto) {
+        User user = userRepository.findById(userDto.getId()).orElseThrow(() -> new UserException(UserErrorCode.UNAUTHORIZED_USER));
+        return validatePassword(user.getPassword(), userDto.getPassword());
+    }
+
+
 
     public String encodePassword (String password) {
         return passwordEncoder.encode(password);

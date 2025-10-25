@@ -1,5 +1,6 @@
 package com.farm2pot.user.controller;
 
+import com.farm2pot.common.exception.UserException;
 import com.farm2pot.common.response.ResponseMessage;
 import com.farm2pot.user.dto.UserDto;
 import com.farm2pot.user.entity.User;
@@ -40,8 +41,27 @@ public class UserController {
         return ResponseMessage.success("editUser success", userService.editUserInfo(request));
     }
 
+    // 사용자 정보 확인 - loginId
     @GetMapping("/userinfo/{loginId}")
-    public ResponseMessage<User> getUserInfo(@RequestParam @Validated UserDto request) {
-        return ResponseMessage.success("select User Info", userService.findByLoginId(request.getLoginId()));
+    public ResponseMessage<User> getUserInfoByLoginId(@PathVariable String loginId) {
+        return ResponseMessage.success("select User by LoginId Info", userService.findByLoginId(loginId));
+    }
+
+    // 사용자 정보 확인 - Id
+//    @GetMapping("/userinfo/{id}")
+//    public ResponseMessage<User> getUserInfoByUserId(@PathVariable Long id) {
+//        return ResponseMessage.success("select User by Id Info", userService.findById(id));
+//    }
+
+    @PostMapping("/check-password")
+    public ResponseMessage<User> checkPassword(@RequestBody UserDto request) {
+        try {
+            userService.checkUser(request);
+            return ResponseMessage.success("checking user.... success", userService.findById(request.getId()));
+        }catch (UserException e) {
+            return ResponseMessage.success(e.getMessage(), null);
+        }
+
+
     }
 }
