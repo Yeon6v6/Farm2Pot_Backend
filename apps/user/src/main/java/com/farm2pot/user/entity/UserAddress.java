@@ -26,9 +26,11 @@ public class UserAddress {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 사용자 엔티티와 ManyToOne 관계
+
+    // N:1 매핑
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
-            name = "id",
+            name = "user_id", // FK 컬럼 이름을 PK와 다르게 지정
             nullable = false,
             foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)
     )
@@ -49,7 +51,7 @@ public class UserAddress {
     @Column(name = "address_line2", length = 255)
     private String addressLine2;
 
-    @Column(name = "is_default")
+    @Column(name = "is_default" )
     private boolean isDefault = false;
 
     @CreationTimestamp

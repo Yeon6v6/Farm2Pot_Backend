@@ -7,8 +7,11 @@ import com.farm2pot.user.dto.*;
 import com.farm2pot.auth.entity.RefreshToken;
 import com.farm2pot.user.entity.User;
 import com.farm2pot.auth.mapper.RefreshTokenMapper;
+import com.farm2pot.user.entity.UserAddress;
+import com.farm2pot.user.mapper.UserAddressMapper;
 import com.farm2pot.user.mapper.UserMapper;
 import com.farm2pot.auth.repository.RefreshTokenRepository;
+import com.farm2pot.user.repository.UserAddressRepository;
 import com.farm2pot.user.repository.UserRepository;
 import com.farm2pot.common.exception.UserException;
 import com.farm2pot.common.exception.UserErrorCode;
@@ -38,12 +41,13 @@ import static com.farm2pot.common.exception.UserErrorCode.USER_NOT_FOUND;
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final UserAddressRepository userAddressRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
     private final RefreshTokenMapper refreshTokenMapper;
     private final UserMapper userMapper;
-
+    private final UserAddressMapper userAddressMapper;
 
     /**
      * Refresh Token을 이용한 Access Token 재발급
@@ -103,12 +107,19 @@ public class AuthService {
      * 회원가입
      */
     @Transactional
-    public void register(RegisterRequestDTO userDto){
-        String password = passwordEncoder.encode(userDto.getPassword());
-        userDto.setPassword(password);
-        User user = userMapper.toEntity(userDto);
+    public void register(RegisterRequestDTO registerDto){
+        //1. 사용자정보 Insert
+        String password = passwordEncoder.encode(registerDto.getPassword());
+        registerDto.setPassword(password);
 
+        User user = userMapper.toEntity(registerDto);
         userRepository.save(user);
+
+        //2. 주소정보 Insert
+        UserAddressDto userAddressDto = getUserAddress(registerDto, user);
+        UserAddress userAddress = userAddressMapper.toEntity(userAddressDto);
+        userAddress.setUser(user);
+        userAddressRepository.save(userAddress);
     }
 
     // 전체 사용자 조회
@@ -132,6 +143,20 @@ public class AuthService {
 
         User entity = userMapper.toEntity(dto);
         userRepository.save(entity);
+    }
+
+    /**
+     * 회원가입 시 입력한 주소정보를 default로 처리
+     * @param registerDto
+     * @return
+     */
+    public UserAddressDto getUserAddress(RegisterRequestDTO registerDto, User user) {
+        UserAddressDto userAddressDto = registerDto.getUserAddressDto();
+        userAddressDto.setDefault(true);
+        return userAddressDto;
+    }
+    public void data(RegisterRequestDTO registerDto) {
+
     }
 //    @PostConstruct
     public void initInsertData() {

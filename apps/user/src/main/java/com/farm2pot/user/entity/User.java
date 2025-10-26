@@ -18,7 +18,7 @@ import java.util.List;
  * description    :
  */
 @Entity
-@Table(name = "users")  // DB 테이블명
+@Table(name = "user")  // DB 테이블명
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -58,12 +58,17 @@ public class User implements Serializable {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "user_roles",
-            joinColumns = @JoinColumn(name = "loginId"),
-            foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT) // FK 제거
+            joinColumns = @JoinColumn(name = "user_id")
     )
     @Builder.Default
     @Column(name = "roles")
     private List<String> roles = new ArrayList<>();      // 권한 (ROLE_USER, ROLE_ADMIN 등)
+
+    // 1:N 매핑
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<UserAddress> addresses = new ArrayList<>();
+
     @CreationTimestamp // insert 시 자동으로 생성
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
