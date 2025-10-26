@@ -91,9 +91,14 @@ public class UserService {
                 .orElseThrow(() -> new UserException(INVALID_PASASWORD));
     }
 
-    public boolean checkUser(UserDto userDto) {
-        User user = userRepository.findById(userDto.getId()).orElseThrow(() -> new UserException(UserErrorCode.UNAUTHORIZED_USER));
-        return validatePassword(user.getPassword(), userDto.getPassword());
+    /**
+     *
+     * @param userPasswordCheckDto
+     * @return
+     */
+    public boolean checkUser(UserPasswordCheckDto userPasswordCheckDto) {
+        userRepository.findById(userPasswordCheckDto.getId()).orElseThrow(() -> new UserException(UserErrorCode.UNAUTHORIZED_USER));
+        return validatePassword(userPasswordCheckDto.getOldPassword(), userPasswordCheckDto.getPassword());
     }
 
 

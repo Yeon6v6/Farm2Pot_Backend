@@ -53,15 +53,18 @@ public class UserController {
 //        return ResponseMessage.success("select User by Id Info", userService.findById(id));
 //    }
 
+    /**
+     * 사용자 패스워드 체크.. 마이페이지 접근 시 필요
+     * @param userPasswordCheckDto
+     * @return
+     */
     @PostMapping("/check-password")
-    public ResponseMessage<User> checkPassword(@RequestBody UserDto request) {
+    public ResponseMessage<String> checkPassword(@RequestBody UserPasswordCheckDto userPasswordCheckDto) {
         try {
-            userService.checkUser(request);
-            return ResponseMessage.success("checking user.... success", userService.findById(request.getId()));
+            boolean userValidate = userService.checkUser(userPasswordCheckDto);
+            return userValidate? ResponseMessage.success("checking user.... success") : ResponseMessage.fail("checking user.... success");
         }catch (UserException e) {
-            return ResponseMessage.success(e.getMessage(), null);
+            return ResponseMessage.success(e.getMessage());
         }
-
-
     }
 }
