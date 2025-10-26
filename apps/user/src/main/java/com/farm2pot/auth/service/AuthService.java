@@ -76,6 +76,7 @@ public class AuthService {
     /**
      * 로그인 처리
      */
+    @Transactional
     public UserLoginTokenResponse login(UserDto request) {
         // 1. 로그인 ID 확인
         User user = userRepository.findByLoginId(request.getLoginId())
@@ -90,7 +91,10 @@ public class AuthService {
         String accessToken = jwtProvider.generateAccessToken(user.getId(), user.getRoles());
         String refreshToken = jwtProvider.generateRefreshToken(user.getId());
 
-        // 4. Refresh Token 저장
+        // 4. 기존 Refresh Token 삭제 (중복 방지)
+        refreshTokenRepository.deleteByUserId(user.getId());
+
+        // 5. Refresh Token 저장
         RefreshTokenDto dto = RefreshTokenDto.builder()
                 .token(refreshToken)
                 .userId(user.getId())
