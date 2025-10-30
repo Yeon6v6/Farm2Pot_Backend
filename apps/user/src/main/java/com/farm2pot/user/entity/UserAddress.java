@@ -1,5 +1,6 @@
 package com.farm2pot.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -34,6 +35,7 @@ public class UserAddress {
             nullable = false,
             foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)
     )
+    @JsonBackReference     // ✅ 반대쪽은 직렬화에서 제외
     private User user;
 
     @Column(name = "recipient_name", length = 100)
