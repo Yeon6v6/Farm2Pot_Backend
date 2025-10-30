@@ -47,7 +47,8 @@ public class UserService {
      * 사용자 정보 조회 (loginId)
      */
     public User findByLoginId(String loginId) {
-        return userRepository.findByLoginId(loginId).orElseThrow(() -> new UserException(USER_NOT_FOUND));
+        User user = userRepository.findByLoginId(loginId).orElseThrow(() -> new UserException(USER_NOT_FOUND));
+        return user;
     }
     /**
      * 사용자 정보 조회 (id)
@@ -95,8 +96,8 @@ public class UserService {
      * @return
      */
     public boolean checkUser(UserPasswordCheckDto userPasswordCheckDto) {
-        userRepository.findById(userPasswordCheckDto.getId()).orElseThrow(() -> new UserException(UserErrorCode.UNAUTHORIZED_USER));
-        return validatePassword(userPasswordCheckDto.getOldPassword(), userPasswordCheckDto.getPassword());
+        User user = userRepository.findById(userPasswordCheckDto.getId()).orElseThrow(() -> new UserException(UserErrorCode.UNAUTHORIZED_USER));
+        return validatePassword(user.getPassword(), userPasswordCheckDto.getPassword());
     }
 }
 

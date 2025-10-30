@@ -1,5 +1,6 @@
 package com.farm2pot.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -67,6 +68,7 @@ public class User implements Serializable {
     // 1:N 매핑
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
+    @JsonManagedReference  // ✅ 직렬화 주인
     private List<UserAddress> addresses = new ArrayList<>();
 
     @CreationTimestamp // insert 시 자동으로 생성

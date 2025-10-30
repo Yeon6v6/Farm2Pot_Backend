@@ -52,7 +52,7 @@ public record ResponseMessage<T>(
     }
 
     // 실패 + 메세지 + 데이터
-    public static <T> ResponseMessage<T> fail(T data, String message) {
+    public static <T> ResponseMessage<T> fail(String message, T data ) {
         return ResponseMessage.<T>builder()
                 .success(false)
                 .message(message)

@@ -23,20 +23,20 @@ public class GatewayExceptionHandler {
     public Mono<ResponseEntity<ResponseMessage<ErrorResponse>>> handleCustomException(GatewayException ex, ServerHttpRequest request) {
         String message = ex.getLocalizedMessage();
         ErrorResponse error = ErrorResponse.of(ex.getStatus(), message, request.getPath().value());
-        return Mono.just(ResponseEntity.status(ex.getStatus()).body(ResponseMessage.fail(error, message)));
+        return Mono.just(ResponseEntity.status(ex.getStatus()).body(ResponseMessage.fail(message,error)));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Mono<ResponseEntity<ResponseMessage<ErrorResponse>>> handleValidationException(MethodArgumentNotValidException ex, ServerHttpRequest request) {
         String message = ex.getBindingResult().getFieldError().getDefaultMessage();
         ErrorResponse error = ErrorResponse.of(HttpStatus.BAD_REQUEST, message, request.getPath().value());
-        return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseMessage.fail(error, message)));
+        return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseMessage.fail(message,error)));
     }
 
     @ExceptionHandler(Exception.class)
     public Mono<ResponseEntity<ResponseMessage<ErrorResponse>>> handleException(Exception ex, ServerHttpRequest request) {
         String message = ex.getLocalizedMessage();
         ErrorResponse error = ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, message, request.getPath().value());
-        return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ResponseMessage.fail(error, message)));
+        return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ResponseMessage.fail(message, error)));
     }
 }

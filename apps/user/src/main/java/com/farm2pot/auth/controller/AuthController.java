@@ -30,7 +30,7 @@ public class AuthController {
     // 토큰 재발급
     @PostMapping("/refresh")
     public ResponseMessage<UserLoginTokenResponse> refresh( @RequestBody RefreshTokenDto request) {
-        return ResponseMessage.success("token refreshed", authService.refresh(request));
+        return ResponseMessage.success("token refresh ..... success", authService.refresh(request));
     }
 
     // 로그인

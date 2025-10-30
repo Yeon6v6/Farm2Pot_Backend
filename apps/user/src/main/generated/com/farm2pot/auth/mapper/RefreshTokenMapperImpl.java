@@ -7,74 +7,74 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-10-22T11:00:16+0900",
+    date = "2025-10-31T00:00:38+0900",
     comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.8 (Microsoft)"
 )
 @Component
 public class RefreshTokenMapperImpl implements RefreshTokenMapper {
 
     @Override
-    public RefreshToken toEntity(RefreshTokenDto dto) {
-        if ( dto == null ) {
+    public RefreshToken toEntity(RefreshTokenDto arg0) {
+        if ( arg0 == null ) {
             return null;
         }
 
         RefreshToken.RefreshTokenBuilder refreshToken = RefreshToken.builder();
 
-        if ( dto.getToken() != null ) {
-            refreshToken.token( dto.getToken() );
+        if ( arg0.getToken() != null ) {
+            refreshToken.token( arg0.getToken() );
         }
-        if ( dto.getUserId() != null ) {
-            refreshToken.userId( dto.getUserId() );
+        if ( arg0.getUserId() != null ) {
+            refreshToken.userId( arg0.getUserId() );
         }
-        if ( dto.getExpiryDate() != null ) {
-            refreshToken.expiryDate( dto.getExpiryDate() );
+        if ( arg0.getExpiryDate() != null ) {
+            refreshToken.expiryDate( arg0.getExpiryDate() );
         }
 
         return refreshToken.build();
     }
 
     @Override
-    public RefreshTokenDto toDto(RefreshToken entity) {
-        if ( entity == null ) {
+    public RefreshTokenDto toDto(RefreshToken arg0) {
+        if ( arg0 == null ) {
             return null;
         }
 
         RefreshTokenDto.RefreshTokenDtoBuilder refreshTokenDto = RefreshTokenDto.builder();
 
-        if ( entity.getId() != null ) {
-            refreshTokenDto.id( entity.getId() );
+        if ( arg0.getId() != null ) {
+            refreshTokenDto.id( arg0.getId() );
         }
-        if ( entity.getToken() != null ) {
-            refreshTokenDto.token( entity.getToken() );
+        if ( arg0.getToken() != null ) {
+            refreshTokenDto.token( arg0.getToken() );
         }
-        if ( entity.getUserId() != null ) {
-            refreshTokenDto.userId( entity.getUserId() );
+        if ( arg0.getUserId() != null ) {
+            refreshTokenDto.userId( arg0.getUserId() );
         }
-        if ( entity.getExpiryDate() != null ) {
-            refreshTokenDto.expiryDate( entity.getExpiryDate() );
+        if ( arg0.getExpiryDate() != null ) {
+            refreshTokenDto.expiryDate( arg0.getExpiryDate() );
         }
 
         return refreshTokenDto.build();
     }
 
     @Override
-    public void updateEntityFromDto(RefreshTokenDto dto, RefreshToken entity) {
-        if ( dto == null ) {
+    public void updateEntityFromDto(RefreshTokenDto arg0, RefreshToken arg1) {
+        if ( arg0 == null ) {
             return;
         }
 
-        if ( dto.getId() != null ) {
-            entity.setId( dto.getId() );
+        if ( arg0.getId() != null ) {
+            arg1.setId( arg0.getId() );
         }
-        if ( dto.getToken() != null ) {
-            entity.setToken( dto.getToken() );
+        if ( arg0.getToken() != null ) {
+            arg1.setToken( arg0.getToken() );
         }
-        if ( dto.getUserId() != null ) {
-            entity.setUserId( dto.getUserId() );
+        if ( arg0.getUserId() != null ) {
+            arg1.setUserId( arg0.getUserId() );
         }
-        if ( dto.getExpiryDate() != null ) {
-            entity.setExpiryDate( dto.getExpiryDate() );
+        if ( arg0.getExpiryDate() != null ) {
+            arg1.setExpiryDate( arg0.getExpiryDate() );
         }
     }
 }

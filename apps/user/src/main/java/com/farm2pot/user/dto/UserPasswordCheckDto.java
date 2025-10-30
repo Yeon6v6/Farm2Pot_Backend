@@ -1,12 +1,12 @@
 package com.farm2pot.user.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserPasswordCheckDto {
     private Long id;
     private String password;

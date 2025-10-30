@@ -46,13 +46,13 @@ public class UserController {
 
     // 사용자 정보 확인 - loginId
     @GetMapping("/userinfo-lid/{loginId}")
-    public ResponseMessage<User> getUserInfoByLoginId(@PathVariable String loginId) {
+    public ResponseMessage<User> getUserInfoByLoginId(@PathVariable("loginId") String loginId) {
         return ResponseMessage.success("select User by LoginId Info", userService.findByLoginId(loginId));
     }
 
     // 사용자 정보 확인 - Id
     @GetMapping("/userinfo-id/{id}")
-    public ResponseMessage<User> getUserInfoByUserId(@PathVariable Long id) {
+    public ResponseMessage<User> getUserInfoByUserId(@PathVariable("id") Long id) {
         return ResponseMessage.success("select User by Id Info", userService.findById(id));
     }
 
@@ -65,9 +65,9 @@ public class UserController {
     public ResponseMessage<String> checkPassword(@RequestBody UserPasswordCheckDto userPasswordCheckDto) {
         try {
             boolean userValidate = userService.checkUser(userPasswordCheckDto);
-            return userValidate? ResponseMessage.success("checking user.... success") : ResponseMessage.fail("checking user.... success");
+            return userValidate? ResponseMessage.success("CHECK PASSWORD...... SUCCESS", null) : ResponseMessage.fail("CHECK PASSWORD...... FAIL", null);
         }catch (UserException e) {
-            return ResponseMessage.success(e.getMessage());
+            return ResponseMessage.success(e.getMessage(), null);
         }
     }
 }
