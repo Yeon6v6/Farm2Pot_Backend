@@ -1,20 +1,20 @@
 package com.farm2pot.auth.mapper;
 
-import com.farm2pot.auth.dto.RefreshTokenDto;
+import com.farm2pot.auth.controller.dto.TokenRefresh;
 import com.farm2pot.auth.entity.RefreshToken;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-10-31T00:00:38+0900",
+    date = "2025-11-01T19:53:57+0900",
     comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.8 (Microsoft)"
 )
 @Component
 public class RefreshTokenMapperImpl implements RefreshTokenMapper {
 
     @Override
-    public RefreshToken toEntity(RefreshTokenDto arg0) {
+    public RefreshToken toEntity(TokenRefresh arg0) {
         if ( arg0 == null ) {
             return null;
         }
@@ -35,31 +35,31 @@ public class RefreshTokenMapperImpl implements RefreshTokenMapper {
     }
 
     @Override
-    public RefreshTokenDto toDto(RefreshToken arg0) {
+    public TokenRefresh toDto(RefreshToken arg0) {
         if ( arg0 == null ) {
             return null;
         }
 
-        RefreshTokenDto.RefreshTokenDtoBuilder refreshTokenDto = RefreshTokenDto.builder();
+        TokenRefresh.TokenRefreshBuilder token = TokenRefresh.builder();
 
         if ( arg0.getId() != null ) {
-            refreshTokenDto.id( arg0.getId() );
+            token.id( arg0.getId() );
         }
         if ( arg0.getToken() != null ) {
-            refreshTokenDto.token( arg0.getToken() );
+            token.token( arg0.getToken() );
         }
         if ( arg0.getUserId() != null ) {
-            refreshTokenDto.userId( arg0.getUserId() );
+            token.userId( arg0.getUserId() );
         }
         if ( arg0.getExpiryDate() != null ) {
-            refreshTokenDto.expiryDate( arg0.getExpiryDate() );
+            token.expiryDate( arg0.getExpiryDate() );
         }
 
-        return refreshTokenDto.build();
+        return token.build();
     }
 
     @Override
-    public void updateEntityFromDto(RefreshTokenDto arg0, RefreshToken arg1) {
+    public void updateEntityFromDto(TokenRefresh arg0, RefreshToken arg1) {
         if ( arg0 == null ) {
             return;
         }

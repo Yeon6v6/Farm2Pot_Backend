@@ -1,13 +1,14 @@
 package com.farm2pot.user.mapper;
 
-import com.farm2pot.user.dto.UserAddressDto;
-import com.farm2pot.user.entity.UserAddress;
+import com.farm2pot.address.mapper.UserAddressMapper;
+import com.farm2pot.address.service.dto.UserAddressDto;
+import com.farm2pot.address.entity.UserAddress;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-10-31T00:00:38+0900",
+    date = "2025-11-01T19:53:58+0900",
     comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.8 (Microsoft)"
 )
 @Component
@@ -21,6 +22,9 @@ public class UserAddressMapperImpl implements UserAddressMapper {
 
         UserAddress.UserAddressBuilder userAddress = UserAddress.builder();
 
+        if ( arg0.getUser() != null ) {
+            userAddress.user( arg0.getUser() );
+        }
         if ( arg0.getRecipientName() != null ) {
             userAddress.recipientName( arg0.getRecipientName() );
         }
@@ -57,6 +61,9 @@ public class UserAddressMapperImpl implements UserAddressMapper {
         if ( arg0.getId() != null ) {
             userAddressDto.id( arg0.getId() );
         }
+        if ( arg0.getUser() != null ) {
+            userAddressDto.user( arg0.getUser() );
+        }
         if ( arg0.getRecipientName() != null ) {
             userAddressDto.recipientName( arg0.getRecipientName() );
         }
@@ -88,6 +95,9 @@ public class UserAddressMapperImpl implements UserAddressMapper {
             return;
         }
 
+        if ( dto.getUser() != null ) {
+            entity.setUser( dto.getUser() );
+        }
         if ( dto.getRecipientName() != null ) {
             entity.setRecipientName( dto.getRecipientName() );
         }

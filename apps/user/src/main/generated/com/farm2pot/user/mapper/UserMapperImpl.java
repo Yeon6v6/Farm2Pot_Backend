@@ -1,6 +1,6 @@
 package com.farm2pot.user.mapper;
 
-import com.farm2pot.user.dto.UserDto;
+import com.farm2pot.user.controller.dto.UserDto;
 import com.farm2pot.user.entity.User;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-10-31T00:00:38+0900",
+    date = "2025-11-01T19:53:58+0900",
     comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.8 (Microsoft)"
 )
 @Component

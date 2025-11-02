@@ -1,17 +1,19 @@
 package com.farm2pot.auth.service;
 
 
-import com.farm2pot.auth.dto.RefreshTokenDto;
-import com.farm2pot.auth.dto.RegisterRequestDTO;
-import com.farm2pot.user.dto.*;
+import com.farm2pot.auth.controller.dto.TokenRefresh;
+import com.farm2pot.auth.controller.dto.CreateUser;
+import com.farm2pot.auth.service.dto.UserLoginTokenResponse;
+import com.farm2pot.address.service.dto.UserAddressDto;
+import com.farm2pot.user.controller.dto.UserDto;
 import com.farm2pot.auth.entity.RefreshToken;
 import com.farm2pot.user.entity.User;
 import com.farm2pot.auth.mapper.RefreshTokenMapper;
-import com.farm2pot.user.entity.UserAddress;
-import com.farm2pot.user.mapper.UserAddressMapper;
+import com.farm2pot.address.entity.UserAddress;
+import com.farm2pot.address.mapper.UserAddressMapper;
 import com.farm2pot.user.mapper.UserMapper;
 import com.farm2pot.auth.repository.RefreshTokenRepository;
-import com.farm2pot.user.repository.UserAddressRepository;
+import com.farm2pot.address.repository.UserAddressRepository;
 import com.farm2pot.user.repository.UserRepository;
 import com.farm2pot.common.exception.UserException;
 import com.farm2pot.common.exception.UserErrorCode;
@@ -52,7 +54,7 @@ public class AuthService {
     /**
      * Refresh Token을 이용한 Access Token 재발급
      */
-    public UserLoginTokenResponse refresh(RefreshTokenDto request) {
+    public UserLoginTokenResponse refresh(TokenRefresh request) {
         // 1. 토큰 존재 확인
         RefreshToken tokenEntity = refreshTokenRepository.findByToken(request.getToken())
                 .orElseThrow(() -> new UserException(UserErrorCode.INVALID_TOKEN));
@@ -95,7 +97,7 @@ public class AuthService {
         refreshTokenRepository.deleteByUserId(user.getId());
 
         // 5. Refresh Token 저장
-        RefreshTokenDto dto = RefreshTokenDto.builder()
+        TokenRefresh dto = TokenRefresh.builder()
                 .token(refreshToken)
                 .userId(user.getId())
                 .expiryDate(Instant.now().plusMillis(604800000)) // 7일
@@ -111,7 +113,7 @@ public class AuthService {
      * 회원가입
      */
     @Transactional
-    public void register(RegisterRequestDTO registerDto){
+    public void register(CreateUser registerDto){
         //1. 사용자정보 Insert
         String password = passwordEncoder.encode(registerDto.getPassword());
         registerDto.setPassword(password);
@@ -154,12 +156,12 @@ public class AuthService {
      * @param registerDto
      * @return
      */
-    public UserAddressDto getUserAddress(RegisterRequestDTO registerDto, User user) {
+    public UserAddressDto getUserAddress(CreateUser registerDto, User user) {
         UserAddressDto userAddressDto = registerDto.getUserAddressDto();
         userAddressDto.setDefault(true);
         return userAddressDto;
     }
-    public void data(RegisterRequestDTO registerDto) {
+    public void data(CreateUser registerDto) {
 
     }
 //    @PostConstruct

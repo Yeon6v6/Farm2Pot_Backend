@@ -1,5 +1,6 @@
-package com.farm2pot.user.dto;
+package com.farm2pot.address.service.dto;
 
+import com.farm2pot.user.entity.User;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -22,6 +23,7 @@ public class UserAddressDto {
 
     // User 엔티티의 id만 포함 (원하면 username, email 등 추가 가능)
     private Long userId;
+    private User user;
     private String loginId;
 
     private String recipientName;

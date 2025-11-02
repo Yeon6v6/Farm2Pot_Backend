@@ -1,4 +1,4 @@
-package com.farm2pot.common.exception.service;
+package com.farm2pot.common.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

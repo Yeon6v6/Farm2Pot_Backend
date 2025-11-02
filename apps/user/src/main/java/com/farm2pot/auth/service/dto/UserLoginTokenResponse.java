@@ -1,5 +1,6 @@
-package com.farm2pot.user.dto;
+package com.farm2pot.auth.service.dto;
 
+import com.farm2pot.user.controller.dto.UserDto;
 import lombok.*;
 
 /**

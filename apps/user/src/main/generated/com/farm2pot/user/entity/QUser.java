@@ -2,6 +2,7 @@ package com.farm2pot.user.entity;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
+import com.farm2pot.address.entity.UserAddress;
 import com.querydsl.core.types.dsl.*;
 
 import com.querydsl.core.types.PathMetadata;

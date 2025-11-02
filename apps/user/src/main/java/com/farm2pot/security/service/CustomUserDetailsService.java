@@ -3,7 +3,7 @@ package com.farm2pot.security.service;
 
 import com.farm2pot.user.entity.User;
 import com.farm2pot.user.repository.UserRepository;
-import com.farm2pot.security.dto.CustomUserDetails;
+import com.farm2pot.security.service.dto.CustomUserDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

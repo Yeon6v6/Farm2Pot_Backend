@@ -1,4 +1,4 @@
-package com.farm2pot.security.dto;
+package com.farm2pot.security.service.dto;
 
 import com.farm2pot.user.entity.User;
 import lombok.Getter;

@@ -1,11 +1,11 @@
 package com.farm2pot.auth.controller;
 
-import com.farm2pot.auth.dto.RefreshTokenDto;
-import com.farm2pot.auth.dto.RegisterRequestDTO;
+import com.farm2pot.auth.controller.dto.TokenRefresh;
+import com.farm2pot.auth.controller.dto.CreateUser;
 import com.farm2pot.auth.service.AuthService;
 import com.farm2pot.common.response.ResponseMessage;
-import com.farm2pot.user.dto.UserDto;
-import com.farm2pot.user.dto.UserLoginTokenResponse;
+import com.farm2pot.user.controller.dto.UserDto;
+import com.farm2pot.auth.service.dto.UserLoginTokenResponse;
 import com.farm2pot.user.entity.User;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class AuthController {
 
     // 토큰 재발급
     @PostMapping("/refresh")
-    public ResponseMessage<UserLoginTokenResponse> refresh( @RequestBody RefreshTokenDto request) {
+    public ResponseMessage<UserLoginTokenResponse> refresh( @RequestBody TokenRefresh request) {
         return ResponseMessage.success("token refresh ..... success", authService.refresh(request));
     }
 
@@ -47,7 +47,7 @@ public class AuthController {
     // 회원가입
     @PostMapping("/register")
     public ResponseMessage<String> register(
-            @RequestBody @Validated RegisterRequestDTO request // TODO : -> 회원가입용 requestDTO 추가해야 함.
+            @RequestBody @Validated CreateUser request // TODO : -> 회원가입용 requestDTO 추가해야 함.
     ) {
         authService.register(request); // 실제 회원가입 처리
         return ResponseMessage.success("join success", "");

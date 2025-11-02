@@ -1,8 +1,9 @@
-package com.farm2pot.user.repository;
+package com.farm2pot.address.repository;
 
-import com.farm2pot.user.entity.UserAddress;
+import com.farm2pot.address.entity.UserAddress;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -14,6 +15,7 @@ import java.util.Optional;
 
 public interface UserAddressRepository extends JpaRepository<UserAddress, Long> {
     Optional<UserAddress> findById(Long Id);
-    Optional<UserAddress> findByUserId(Long userId);
+    Optional<List<UserAddress>> findAllAddressByUserId(Long userId);
+    Optional<String> deleteByUserId(Long userId);
 }
 

@@ -2,7 +2,7 @@ package com.farm2pot.user.mapper;
 
 import com.farm2pot.common.config.MapStructConfig;
 import com.farm2pot.common.mapper.BaseMapper;
-import com.farm2pot.user.dto.UserDto;
+import com.farm2pot.user.controller.dto.UserDto;
 import com.farm2pot.user.entity.User;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;

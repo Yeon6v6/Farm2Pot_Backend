@@ -1,4 +1,4 @@
-package com.farm2pot.auth.dto;
+package com.farm2pot.auth.controller.dto;
 
 import lombok.*;
 
@@ -16,7 +16,7 @@ import java.time.Instant;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RefreshTokenDto {
+public class TokenRefresh {
     private Long id;
     private String token;
     private Long userId;

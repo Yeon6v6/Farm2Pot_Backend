@@ -1,5 +1,6 @@
-package com.farm2pot.user.entity;
+package com.farm2pot.address.entity;
 
+import com.farm2pot.user.entity.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;

@@ -3,13 +3,14 @@ package com.farm2pot.user.service;
 import com.farm2pot.auth.repository.RefreshTokenRepository;
 import com.farm2pot.common.exception.UserErrorCode;
 import com.farm2pot.common.exception.UserException;
-import com.farm2pot.common.exception.service.CommonService;
-import com.farm2pot.user.dto.UserDto;
-import com.farm2pot.user.dto.UserPasswordCheckDto;
+import com.farm2pot.common.service.CommonService;
+import com.farm2pot.user.controller.dto.UserDto;
+import com.farm2pot.user.service.dto.UserPasswordCheckDto;
 import com.farm2pot.user.entity.User;
 import com.farm2pot.user.mapper.UserMapper;
 import com.farm2pot.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +27,7 @@ import static com.farm2pot.common.exception.UserErrorCode.USER_NOT_FOUND;
  */
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
@@ -78,6 +80,15 @@ public class UserService {
         userMapper.updateEntityFromDto(
                 userDto, user);
         return user;
+    }
+
+
+    /**
+     * 사용자 삭제 (user - pk)
+     * @param id
+     */
+    public void deleteUserById(Long id){
+        if (userRepository.existsById(id)) userRepository.deleteById(id);
     }
 
 

@@ -1,12 +1,9 @@
-package com.farm2pot.user.mapper;
+package com.farm2pot.address.mapper;
 
 import com.farm2pot.common.config.MapStructConfig;
 import com.farm2pot.common.mapper.BaseMapper;
-import com.farm2pot.user.dto.UserAddressDto;
-import com.farm2pot.user.dto.UserDto;
-import com.farm2pot.user.entity.User;
-import com.farm2pot.user.entity.UserAddress;
-import org.mapstruct.AfterMapping;
+import com.farm2pot.address.service.dto.UserAddressDto;
+import com.farm2pot.address.entity.UserAddress;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
