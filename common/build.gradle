@@ -1,0 +1,15 @@
+// common 모듈 - 공통 유틸리티 라이브러리
+
+plugins {
+    id 'java-library'
+}
+
+dependencies {
+    // common이 필요한 최소한의 의존성만
+    api 'org.springframework.boot:spring-boot-starter'
+    api 'org.springframework.boot:spring-boot-starter-web'
+
+    // MapStruct
+    api "org.mapstruct:mapstruct:${mapstructVersion}"
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+}
