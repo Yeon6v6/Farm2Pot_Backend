@@ -32,14 +32,14 @@ public class UserResponseException {
                 request.getRequestURI()
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(ResponseMessage.fail(error, message));
+                .body(ResponseMessage.fail( message, error));
     }
 
     @ExceptionHandler(UserException.class)
     public ResponseEntity<ResponseMessage<ErrorResponse>> handleGatewayException(UserException ex, HttpServletRequest request) {
         String message = ex.getLocalizedMessage();
         ErrorResponse error = ErrorResponse.of(ex.getStatus(), message, request.getRequestURI());
-        return ResponseEntity.status(ex.getStatus()).body(ResponseMessage.fail(error, message));
+        return ResponseEntity.status(ex.getStatus()).body(ResponseMessage.fail(message, error));
     }
 
     // DTO 유효성 검증 실패
@@ -47,7 +47,7 @@ public class UserResponseException {
     public ResponseEntity<ResponseMessage<ErrorResponse>> handleValidationException(MethodArgumentNotValidException ex, HttpServletRequest request) {
         String message = ex.getBindingResult().getFieldError().getDefaultMessage();
         ErrorResponse error = ErrorResponse.of(HttpStatus.BAD_REQUEST, message, request.getRequestURI());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseMessage.fail(error, message));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseMessage.fail( message, error));
     }
 
     // 일반 예외 처리
@@ -55,6 +55,6 @@ public class UserResponseException {
     public ResponseEntity<ResponseMessage<ErrorResponse>> handleException(Exception ex, HttpServletRequest request) {
         String message = ex.getLocalizedMessage();
         ErrorResponse error = ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, message, request.getRequestURI());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ResponseMessage.fail(error, message));
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ResponseMessage.fail(message, error));
     }
 }

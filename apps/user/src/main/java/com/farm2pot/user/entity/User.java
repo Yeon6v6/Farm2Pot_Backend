@@ -1,5 +1,7 @@
 package com.farm2pot.user.entity;
 
+import com.farm2pot.address.entity.Address;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -18,7 +20,7 @@ import java.util.List;
  * description    :
  */
 @Entity
-@Table(name = "users")  // DB 테이블명
+@Table(name = "user")  // DB 테이블명
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -58,12 +60,18 @@ public class User implements Serializable {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "user_roles",
-            joinColumns = @JoinColumn(name = "loginId"),
-            foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT) // FK 제거
+            joinColumns = @JoinColumn(name = "user_id")
     )
     @Builder.Default
     @Column(name = "roles")
     private List<String> roles = new ArrayList<>();      // 권한 (ROLE_USER, ROLE_ADMIN 등)
+
+    // 1:N 매핑
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    @JsonManagedReference  // ✅ 직렬화 주인
+    private List<Address> addresses = new ArrayList<>();
+
     @CreationTimestamp // insert 시 자동으로 생성
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

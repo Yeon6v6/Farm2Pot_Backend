@@ -52,7 +52,7 @@ public class JwtProvider {
         }
     }
 
-    public String getLoginId(String token) {
+    public String getId(String token) {
         return Jwts.parser()
                 .setSigningKey(key)
                 .build()
