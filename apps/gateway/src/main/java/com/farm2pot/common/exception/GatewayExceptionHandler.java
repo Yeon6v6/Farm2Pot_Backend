@@ -19,7 +19,7 @@ import reactor.core.publisher.Mono;
 
 @RestControllerAdvice
 public class GatewayExceptionHandler {
-    @ExceptionHandler(GatewayException.class)
+    /*@ExceptionHandler(GatewayException.class)
     public Mono<ResponseEntity<ResponseMessage<ErrorResponse>>> handleCustomException(GatewayException ex, ServerHttpRequest request) {
         String message = ex.getLocalizedMessage();
         ErrorResponse error = ErrorResponse.of(ex.getStatus(), message, request.getPath().value());
@@ -38,5 +38,5 @@ public class GatewayExceptionHandler {
         String message = ex.getLocalizedMessage();
         ErrorResponse error = ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, message, request.getPath().value());
         return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ResponseMessage.fail(message, error)));
-    }
+    }*/
 }

@@ -1,9 +1,9 @@
 package com.farm2pot.address.controller;
 
+import com.farm2pot.address.entity.Address;
+import com.farm2pot.address.controller.dto.AddressDto;
 import com.farm2pot.common.response.ResponseMessage;
-import com.farm2pot.address.service.dto.UserAddressDto;
-import com.farm2pot.address.entity.UserAddress;
-import com.farm2pot.address.service.UserAddressService;
+import com.farm2pot.address.service.AddressService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,9 +19,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/user/addr")
 @RequiredArgsConstructor
-public class UserAddressController {
+public class AddressController {
 
-    private final UserAddressService userAddressService;
+    private final AddressService addressService;
 
     /**
      * 사용자의 UserId로 사용자의 배송지 목록 조회
@@ -29,20 +29,20 @@ public class UserAddressController {
      * @return
      */
     @GetMapping("/address/{userId}")
-    public ResponseMessage<List<UserAddress>> findAllAddress(@PathVariable("userId") Long userId) {
-        return ResponseMessage.success("Select UserAddress By UserId",userAddressService.findAllAddressByUserId(userId));
+    public ResponseMessage<List<Address>> findAllAddress(@PathVariable("userId") Long userId) {
+        return ResponseMessage.success("Select UserAddress By UserId", addressService.findAllAddressByUserId(userId));
     }
 
 
     /**
      * 사용자 배송지 추가
-     * @param userAddressDto
+     * @param addressDto
      * @return
      */
     @PostMapping("/address")
-    public ResponseMessage<String> addUserAddress(@RequestBody UserAddressDto userAddressDto) {
+    public ResponseMessage<String> addUserAddress(@RequestBody AddressDto addressDto) {
         try{
-            userAddressService.addUserAddress(userAddressDto);
+            addressService.addUserAddress(addressDto);
             return ResponseMessage.success("Insert UserAddress.... Success");
         }catch (Exception e) {
             e.printStackTrace();
@@ -53,12 +53,12 @@ public class UserAddressController {
     /**
      * 사용자의 배송지 목록 중 특정 배송지 하나를 수정
      * @param addrId
-     * @param userAddressDto
+     * @param addressDto
      * @return
      */
     @PutMapping("/address/{addrId}")
-    public ResponseMessage<UserAddress> editAddress(@PathVariable("addrId") Long addrId, @RequestBody UserAddressDto userAddressDto) {
-        return ResponseMessage.success("Select UserAddress By UserId",userAddressService.findUserAddressById(addrId));
+    public ResponseMessage<Address> editAddress(@PathVariable("addrId") Long addrId, @RequestBody AddressDto addressDto) {
+        return ResponseMessage.success("Select UserAddress By UserId", addressService.findUserAddressById(addrId));
     }
 
     /**
@@ -68,7 +68,7 @@ public class UserAddressController {
      */
     @DeleteMapping("/address/delete/uid/{addrId}")
     public ResponseMessage<String> deleteAddress(@PathVariable("addrId") Long addrId) {
-        userAddressService.deleteUserAddressByUserId(addrId);
+        addressService.deleteUserAddressByUserId(addrId);
         return ResponseMessage.success("Delete UserAddress By AddressId");
     }
 }

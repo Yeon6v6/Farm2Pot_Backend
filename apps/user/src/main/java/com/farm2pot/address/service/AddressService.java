@@ -1,12 +1,12 @@
 package com.farm2pot.address.service;
 
+import com.farm2pot.address.entity.Address;
+import com.farm2pot.address.mapper.AddressMapper;
 import com.farm2pot.common.exception.UserErrorCode;
 import com.farm2pot.common.exception.UserException;
-import com.farm2pot.address.service.dto.UserAddressDto;
+import com.farm2pot.address.controller.dto.AddressDto;
 import com.farm2pot.user.entity.User;
-import com.farm2pot.address.entity.UserAddress;
-import com.farm2pot.address.mapper.UserAddressMapper;
-import com.farm2pot.address.repository.UserAddressRepository;
+import com.farm2pot.address.repository.AddressRepository;
 import com.farm2pot.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,19 +24,19 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserAddressService {
+public class AddressService {
 
-    private final UserAddressRepository userAddressRepository;
+    private final AddressRepository addressRepository;
     private final UserRepository userRepository;
-    private final UserAddressMapper userAddressMapper;
+    private final AddressMapper userAddressMapper;
 
     /**
      * USERADDRESS pk로 배송지 찾기
      * @param id
      * @return
      */
-    public UserAddress findUserAddressById(Long id) {
-        return userAddressRepository.findById(id).orElseThrow(() -> new UserException(UserErrorCode.NOT_FOUND_ADDRESS));
+    public Address findUserAddressById(Long id) {
+        return addressRepository.findById(id).orElseThrow(() -> new UserException(UserErrorCode.NOT_FOUND_ADDRESS));
     }
 
     /**
@@ -44,24 +44,24 @@ public class UserAddressService {
      * @param userId
      * @return
      */
-    public List<UserAddress> findAllAddressByUserId(Long userId) {
-        return userAddressRepository.findAllAddressByUserId(userId).orElseThrow(() -> new UserException(UserErrorCode.NOT_FOUND_ADDRESS));
+    public List<Address> findAllAddressByUserId(Long userId) {
+        return addressRepository.findAllAddressByUserId(userId).orElseThrow(() -> new UserException(UserErrorCode.NOT_FOUND_ADDRESS));
     }
 
 
     /**
      * 사용자 배송지 추가
-     * @param userAddressDto
+     * @param addressDto
      */
-    public void addUserAddress(UserAddressDto userAddressDto) {
-        Long userId = userAddressDto.getUserId();
+    public void addUserAddress(AddressDto addressDto) {
+        Long userId = addressDto.getUserId();
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserException(UserErrorCode.USER_NOT_FOUND)
         );
         //DTO에 UserEntity 세팅
-        userAddressDto.setUser(user);
+        addressDto.setUser(user);
         //UserAddress Insert
-        userAddressRepository.save(userAddressMapper.toEntity(userAddressDto));
+        addressRepository.save(userAddressMapper.toEntity(addressDto));
 
     }
 
@@ -70,6 +70,6 @@ public class UserAddressService {
      * @param UserId
      */
     public void deleteUserAddressByUserId(Long UserId) {
-        userAddressRepository.deleteByUserId(UserId);
+        addressRepository.deleteByUserId(UserId);
     }
 }

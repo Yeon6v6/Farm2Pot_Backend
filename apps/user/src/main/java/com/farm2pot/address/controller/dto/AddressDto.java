@@ -1,4 +1,4 @@
-package com.farm2pot.address.service.dto;
+package com.farm2pot.address.controller.dto;
 
 import com.farm2pot.user.entity.User;
 import lombok.*;
@@ -18,10 +18,8 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserAddressDto {
+public class AddressDto {
     private Long id;
-
-    // User 엔티티의 id만 포함 (원하면 username, email 등 추가 가능)
     private Long userId;
     private User user;
     private String loginId;

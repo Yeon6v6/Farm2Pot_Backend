@@ -22,13 +22,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserAddress {
+public class Address {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-
     // N:1 매핑
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
@@ -36,7 +34,7 @@ public class UserAddress {
             nullable = false,
             foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)
     )
-    @JsonBackReference     // ✅ 반대쪽은 직렬화에서 제외
+    @JsonBackReference     // 반대쪽은 직렬화에서 제외
     private User user;
 
     @Column(name = "recipient_name", length = 100)

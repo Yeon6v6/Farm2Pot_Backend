@@ -1,6 +1,6 @@
 package com.farm2pot.user.entity;
 
-import com.farm2pot.address.entity.UserAddress;
+import com.farm2pot.address.entity.Address;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -70,7 +70,7 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     @JsonManagedReference  // ✅ 직렬화 주인
-    private List<UserAddress> addresses = new ArrayList<>();
+    private List<Address> addresses = new ArrayList<>();
 
     @CreationTimestamp // insert 시 자동으로 생성
     @Column(name = "created_at", updatable = false)

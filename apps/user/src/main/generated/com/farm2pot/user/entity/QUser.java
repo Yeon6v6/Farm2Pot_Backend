@@ -2,7 +2,6 @@ package com.farm2pot.user.entity;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
-import com.farm2pot.address.entity.UserAddress;
 import com.querydsl.core.types.dsl.*;
 
 import com.querydsl.core.types.PathMetadata;
@@ -21,7 +20,7 @@ public class QUser extends EntityPathBase<User> {
 
     public static final QUser user = new QUser("user");
 
-    public final ListPath<UserAddress, QUserAddress> addresses = this.<UserAddress, QUserAddress>createList("addresses", UserAddress.class, QUserAddress.class, PathInits.DIRECT2);
+    public final ListPath<com.farm2pot.address.entity.Address, com.farm2pot.address.entity.QAddress> addresses = this.<com.farm2pot.address.entity.Address, com.farm2pot.address.entity.QAddress>createList("addresses", com.farm2pot.address.entity.Address.class, com.farm2pot.address.entity.QAddress.class, PathInits.DIRECT2);
 
     public final DatePath<java.util.Date> birthDay = createDate("birthDay", java.util.Date.class);
 

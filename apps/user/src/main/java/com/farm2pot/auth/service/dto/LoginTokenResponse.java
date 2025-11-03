@@ -15,7 +15,7 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserLoginTokenResponse {
+public class LoginTokenResponse {
     private Long userId;
     private String accessToken;
     private String refreshToken;

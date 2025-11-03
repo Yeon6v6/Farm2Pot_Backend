@@ -1,5 +1,6 @@
 package com.farm2pot.user.service;
 
+import com.farm2pot.address.service.AddressService;
 import com.farm2pot.auth.repository.RefreshTokenRepository;
 import com.farm2pot.common.exception.UserErrorCode;
 import com.farm2pot.common.exception.UserException;
@@ -31,6 +32,7 @@ import static com.farm2pot.common.exception.UserErrorCode.USER_NOT_FOUND;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final AddressService addressService;
     private final CommonService commonService;
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserMapper userMapper;

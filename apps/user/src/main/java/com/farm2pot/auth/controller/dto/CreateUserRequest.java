@@ -1,6 +1,6 @@
 package com.farm2pot.auth.controller.dto;
 
-import com.farm2pot.address.service.dto.UserAddressDto;
+import com.farm2pot.address.controller.dto.AddressDto;
 import com.farm2pot.user.controller.dto.UserDto;
 import lombok.*;
 
@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateUser extends UserDto {
+public class CreateUserRequest extends UserDto {
 
     private Long id;
 //    @NotBlank(message = "로그인 아이디는 필수입니다.")
@@ -28,6 +28,6 @@ public class CreateUser extends UserDto {
     private String gender;
     private String nickName;
     private List<String> roles = List.of("ROLE_USER");
-    private UserAddressDto userAddressDto; // 사용자 주소
+    private AddressDto addressDto; // 사용자 주소
 
 }
