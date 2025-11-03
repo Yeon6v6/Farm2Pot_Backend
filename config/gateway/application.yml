@@ -1,3 +1,5 @@
-gateway:
-  environment:
-    SPRING_PROFILES_ACTIVE: ${SPRING_PROFILE:-dev}  # 기본 dev
+# GATEWAY
+spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}  # 기본 dev
+

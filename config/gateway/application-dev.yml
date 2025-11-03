@@ -1,4 +1,4 @@
-# GATEWAY DEV - backend server port
+# GATEWAY DEV
 server:
   port: 19080
 
@@ -16,6 +16,18 @@ farm2pot:
 spring:
   application:
     name: gateway-service
+  redis:
+    host: localhost   # Redis 서버 호스트
+    port: 26379        # Redis 서버 포트
+    password: ""      # Redis에 비밀번호가 있다면 입력
+    timeout: 2000ms   # 연결 타임아웃
+
+# SECUTIRY
+jwt:
+  security:
+    key: 6rCA7J6Q6rOgIO2GoOydtO2UhOuhnOygne2KuCBqd3Qgc2VjcmV0IO2CpOyeheuLiOuLpA==
+    whiteList:
+      - /api/user/public/**
 
 # Route 설정
 routes:
@@ -36,3 +48,6 @@ logging:
   level:
     com.farm2pot: DEBUG
     org.springframework: WARN
+    org.springframework.boot.web.embedded.netty: DEBUG
+
+

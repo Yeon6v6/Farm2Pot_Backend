@@ -24,6 +24,14 @@ spring:
     host: ${SPRING_REDIS_HOST}
     port: ${SPRING_REDIS_PORT}
 
+jwt:
+  security:
+    key: 6rCA7J6Q6rOgIO2GoOydtO2UhOuhnOygne2KuCBqd3Qgc2VjcmV0IO2CpOyeheuLiOuLpA==
+    expiration: 360000   # 1시간 (단위: 밀리초)
+    refresh-expiration: 360000 # 테스트를 위해 360000    1209600000  # 2주 (선택)
+    whiteList:
+      - /api/user/public/**
+
 kafka:
   bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS}
 

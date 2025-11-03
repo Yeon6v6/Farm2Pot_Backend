@@ -2,6 +2,9 @@
 build/
 **/.gradle/
 
+# Build outputs
+*.class
+
 # IDE files
 .idea/
 **/.idea/
