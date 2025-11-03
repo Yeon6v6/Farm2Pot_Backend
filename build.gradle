@@ -54,6 +54,13 @@ subprojects {
         isMacOs = System.getProperty('os.name').toLowerCase().contains('mac')
     }
 
+    // common 제외하고 나머지에 공통 의존성 추가
+    if (project.name != 'common') {
+        dependencies {
+            implementation project(':common')  // 모든 apps에 common 추가
+        }
+    }
+
     dependencies {
         //implementation 'org.springframework.boot:spring-boot-starter-web'
 
@@ -139,7 +146,6 @@ subprojects {
         /** **/
         implementation "org.mapstruct:mapstruct:${mapstructVersion}"
         annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
-
 
         if (project.ext.isMacOs) {
             runtimeOnly 'io.netty:netty-resolver-dns-native-macos:4.2.2.Final:osx-aarch_64' // MacOS Silicon 라이브러리 누락 문제
