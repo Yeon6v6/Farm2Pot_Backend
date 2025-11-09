@@ -1,10 +1,9 @@
 package com.farm2pot.common.http.advice;
 
 import com.farm2pot.common.exception.BaseException;
-import com.farm2pot.common.http.response.ApiErrorResponse;
+import com.farm2pot.common.http.response.ApiResponse;
 import com.farm2pot.common.http.response.ApiResponseCode;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
@@ -31,10 +30,10 @@ public class ApiControllerAdvice {
      * BaseException 처리
      */
     @ExceptionHandler(BaseException.class)
-    public ResponseEntity<ApiErrorResponse> handleBaseException(BaseException e) {
+    public ResponseEntity<ApiResponse<?>> handleBaseException(BaseException e) {
         log.error("BaseException occurred: code={}, message={}", e.getCode(), e.getMessage(), e);
 
-        ApiErrorResponse response = ApiErrorResponse.of(
+        ApiResponse<?> response = ApiResponse.error(
                 e.getCode(),
                 e.getMessage()
         );
@@ -48,7 +47,7 @@ public class ApiControllerAdvice {
      * Validation 예외 처리 (@Valid, @Validated)
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    public ResponseEntity<ApiResponse<?>> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         log.error("Validation error occurred: {}", e.getMessage(), e);
 
         Map<String, String> errors = new HashMap<>();
@@ -58,7 +57,7 @@ public class ApiControllerAdvice {
             errors.put(fieldName, errorMessage);
         });
 
-        ApiErrorResponse response = ApiErrorResponse.of(
+        ApiResponse<Map<String, String>> response = ApiResponse.error(
                 ApiResponseCode.VALIDATION_ERROR,
                 "유효성 검증에 실패했습니다",
                 errors
@@ -73,7 +72,7 @@ public class ApiControllerAdvice {
      * BindException 처리
      */
     @ExceptionHandler(BindException.class)
-    public ResponseEntity<ApiErrorResponse> handleBindException(BindException e) {
+    public ResponseEntity<ApiResponse<?>> handleBindException(BindException e) {
         log.error("Binding error occurred: {}", e.getMessage(), e);
 
         Map<String, String> errors = new HashMap<>();
@@ -83,7 +82,7 @@ public class ApiControllerAdvice {
             errors.put(fieldName, errorMessage);
         });
 
-        ApiErrorResponse response = ApiErrorResponse.of(
+        ApiResponse<Map<String, String>> response = ApiResponse.error(
                 ApiResponseCode.VALIDATION_ERROR,
                 "요청 데이터 바인딩에 실패했습니다",
                 errors
@@ -98,10 +97,10 @@ public class ApiControllerAdvice {
      * 필수 파라미터 누락 처리
      */
     @ExceptionHandler(MissingServletRequestParameterException.class)
-    public ResponseEntity<ApiErrorResponse> handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
+    public ResponseEntity<ApiResponse<?>> handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
         log.error("Missing parameter error: {}", e.getMessage(), e);
 
-        ApiErrorResponse response = ApiErrorResponse.of(
+        ApiResponse<?> response = ApiResponse.error(
                 ApiResponseCode.BAD_REQUEST,
                 String.format("필수 파라미터가 누락되었습니다: %s", e.getParameterName())
         );
@@ -115,10 +114,10 @@ public class ApiControllerAdvice {
      * 타입 불일치 처리
      */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ApiErrorResponse> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
+    public ResponseEntity<ApiResponse<?>> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
         log.error("Type mismatch error: {}", e.getMessage(), e);
 
-        ApiErrorResponse response = ApiErrorResponse.of(
+        ApiResponse<?> response = ApiResponse.error(
                 ApiResponseCode.BAD_REQUEST,
                 String.format("파라미터 타입이 올바르지 않습니다: %s", e.getName())
         );
@@ -132,10 +131,10 @@ public class ApiControllerAdvice {
      * HTTP 메시지 읽기 실패 처리
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ApiErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+    public ResponseEntity<ApiResponse<?>> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
         log.error("Message not readable error: {}", e.getMessage(), e);
 
-        ApiErrorResponse response = ApiErrorResponse.of(
+        ApiResponse<?> response = ApiResponse.error(
                 ApiResponseCode.BAD_REQUEST,
                 "요청 본문을 읽을 수 없습니다"
         );
@@ -149,10 +148,10 @@ public class ApiControllerAdvice {
      * 지원하지 않는 HTTP 메서드 처리
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<ApiErrorResponse> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+    public ResponseEntity<ApiResponse<?>> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
         log.error("Method not supported error: {}", e.getMessage(), e);
 
-        ApiErrorResponse response = ApiErrorResponse.of(
+        ApiResponse<?> response = ApiResponse.error(
                 ApiResponseCode.METHOD_NOT_ALLOWED,
                 String.format("지원하지 않는 HTTP 메서드입니다: %s", e.getMethod())
         );
@@ -166,10 +165,10 @@ public class ApiControllerAdvice {
      * 핸들러를 찾을 수 없는 경우 처리
      */
     @ExceptionHandler(NoHandlerFoundException.class)
-    public ResponseEntity<ApiErrorResponse> handleNoHandlerFoundException(NoHandlerFoundException e) {
+    public ResponseEntity<ApiResponse<?>> handleNoHandlerFoundException(NoHandlerFoundException e) {
         log.error("No handler found error: {}", e.getMessage(), e);
 
-        ApiErrorResponse response = ApiErrorResponse.of(
+        ApiResponse<?> response = ApiResponse.error(
                 ApiResponseCode.NOT_FOUND,
                 "요청한 리소스를 찾을 수 없습니다"
         );
@@ -183,10 +182,10 @@ public class ApiControllerAdvice {
      * 그 외 모든 예외 처리
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiErrorResponse> handleException(Exception e) {
+    public ResponseEntity<ApiResponse<?>> handleException(Exception e) {
         log.error("Unexpected error occurred: {}", e.getMessage(), e);
 
-        ApiErrorResponse response = ApiErrorResponse.of(
+        ApiResponse<?> response = ApiResponse.error(
                 ApiResponseCode.INTERNAL_SERVER_ERROR,
                 "서버 내부 오류가 발생했습니다"
         );
