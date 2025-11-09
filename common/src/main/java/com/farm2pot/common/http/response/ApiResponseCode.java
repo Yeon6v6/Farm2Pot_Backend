@@ -1,5 +1,6 @@
 package com.farm2pot.common.http.response;
 
+import com.farm2pot.common.exception.BaseErrorCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -9,7 +10,7 @@ import org.springframework.http.HttpStatus;
  */
 @Getter
 @RequiredArgsConstructor
-public enum ApiResponseCode {
+public enum ApiResponseCode implements BaseErrorCode {
 
     // 성공 응답
     SUCCESS(HttpStatus.OK, "SUCCESS", "성공"),
@@ -35,8 +36,4 @@ public enum ApiResponseCode {
     private final HttpStatus httpStatus;
     private final String code;
     private final String message;
-
-    public int getStatusValue() {
-        return httpStatus.value();
-    }
 }

@@ -1,5 +1,6 @@
 package com.farm2pot.common.http.response;
 
+import com.farm2pot.common.exception.BaseErrorCode;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 
@@ -34,7 +35,7 @@ public record ApiResponse<T>(
     }
 
     // 성공 응답 (ResponseCode 기반)
-    public static <T> ApiResponse<T> of(T data, ApiResponseCode responseCode) {
+    public static <T> ApiResponse<T> of(T data, BaseErrorCode responseCode) {
         return ApiResponse.<T>builder()
                 .data(data)
                 .responseCode(responseCode.getCode())
@@ -43,7 +44,7 @@ public record ApiResponse<T>(
     }
 
     // 성공 응답 (ResponseCode + 커스텀 메시지)
-    public static <T> ApiResponse<T> of(T data, ApiResponseCode responseCode, String message) {
+    public static <T> ApiResponse<T> of(T data, BaseErrorCode responseCode, String message) {
         return ApiResponse.<T>builder()
                 .data(data)
                 .responseCode(responseCode.getCode())
@@ -51,29 +52,29 @@ public record ApiResponse<T>(
                 .build();
     }
 
-    // 에러 응답 (ResponseCode 기반)
-    public static <T> ApiResponse<T> error(ApiResponseCode responseCode) {
+    // 에러 응답 (BaseErrorCode 기반)
+    public static <T> ApiResponse<T> error(BaseErrorCode errorCode) {
         return ApiResponse.<T>builder()
                 .data(null)
-                .responseCode(responseCode.getCode())
-                .responseMessage(responseCode.getMessage())
+                .responseCode(errorCode.getCode())
+                .responseMessage(errorCode.getMessage())
                 .build();
     }
 
-    // 에러 응답 (ResponseCode + 커스텀 메시지)
-    public static <T> ApiResponse<T> error(ApiResponseCode responseCode, String message) {
+    // 에러 응답 (BaseErrorCode + 커스텀 메시지)
+    public static <T> ApiResponse<T> error(BaseErrorCode errorCode, String message) {
         return ApiResponse.<T>builder()
                 .data(null)
-                .responseCode(responseCode.getCode())
+                .responseCode(errorCode.getCode())
                 .responseMessage(message)
                 .build();
     }
 
-    // 에러 응답 (ResponseCode + 메시지 + 데이터)
-    public static <T> ApiResponse<T> error(ApiResponseCode responseCode, String message, T data) {
+    // 에러 응답 (BaseErrorCode + 메시지 + 데이터)
+    public static <T> ApiResponse<T> error(BaseErrorCode errorCode, String message, T data) {
         return ApiResponse.<T>builder()
                 .data(data)
-                .responseCode(responseCode.getCode())
+                .responseCode(errorCode.getCode())
                 .responseMessage(message)
                 .build();
     }
