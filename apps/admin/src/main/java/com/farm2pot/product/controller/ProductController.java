@@ -31,4 +31,12 @@ public class ProductController {
     ) {
         return productService.getProducts(keyword, category, origin, pageRequest.getPageable());
     }
+
+    /**
+     * 상품 상세 조회
+     */
+    @GetMapping("/{productId}")
+    public ProductResponse getProduct(@PathVariable Long productId) {
+        return productService.getProduct(productId);
+    }
 }

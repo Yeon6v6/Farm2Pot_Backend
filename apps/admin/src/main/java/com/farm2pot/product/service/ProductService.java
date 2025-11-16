@@ -1,5 +1,7 @@
 package com.farm2pot.product.service;
 
+import com.farm2pot.common.exception.BusinessException;
+import com.farm2pot.common.exception.ErrorCode;
 import com.farm2pot.product.controller.dto.*;
 import com.farm2pot.product.entity.Product;
 import com.farm2pot.product.repository.ProductHistoryRepository;
@@ -28,4 +30,12 @@ public class ProductService {
         return products.map(ProductResponse::from);
     }
 
+    /**
+     * 상품 상세 조회
+     */
+    public ProductResponse getProduct(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
+        return ProductResponse.from(product);
+    }
 }
