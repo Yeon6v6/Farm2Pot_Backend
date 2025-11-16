@@ -77,4 +77,17 @@ public class ProductController {
     ) {
         return productService.adjustStock(productId, request);
     }
+
+    /**
+     * 재고 이력 조회
+     */
+    @GetMapping("/{productId}/history")
+    public Page<ProductHistoryResponse> getProductHistory(
+            @PathVariable Long productId,
+            @RequestParam LocalDateTime startDate,
+            @RequestParam LocalDateTime endDate,
+            CustomPageRequest pageRequest
+    ) {
+        return productService.getProductHistory(productId, startDate, endDate, pageRequest.getPageable());
+    }
 }

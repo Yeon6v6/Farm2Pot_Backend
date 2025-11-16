@@ -170,6 +170,28 @@ public class ProductService {
     }
 
     /**
+     * 재고 이력 조회
+     */
+    public Page<ProductHistoryResponse> getProductHistory(
+            Long productId,
+            LocalDateTime startDate,
+            LocalDateTime endDate,
+            Pageable pageable
+    ) {
+        Page<ProductHistory> histories;
+
+        if (startDate != null && endDate != null) {
+            histories = productHistoryRepository.findByProductIdAndCreateAtBetween(
+                    productId, startDate, endDate, pageable
+            );
+        } else {
+            histories = productHistoryRepository.findByProductId(productId, pageable);
+        }
+
+        return histories.map(ProductHistoryResponse::from);
+    }
+
+    /**
      * 상품 코드 생성
      */
     private String generateProductCode() {
