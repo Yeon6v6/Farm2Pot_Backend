@@ -1,25 +1,29 @@
 package com.farm2pot.product.entity;
 
+import com.farm2pot.common.exception.BusinessErrorCode;
+import com.farm2pot.common.exception.DomainException;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 @Embeddable
 @Getter
-@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Stock {
-    private Integer quantity;
+    private AtomicInteger quantity;
 
-    public void increase(Integer amount) {
-        this.quantity += amount;
+    public void increase(AtomicInteger amount) {
+        this.quantity.addAndGet(amount.get());
     }
 
-    public void decrease(Integer amount) {
-        if (this.quantity < amount) {
-            throw new IllegalStateException("재고가 부족합니다.");
+    public void decrease(AtomicInteger amount) {
+        int currentQty = this.quantity.get();
+        if (currentQty < amount.get()) {
+            throw new DomainException(BusinessErrorCode.OUT_OF_STOCK);
         }
-        this.quantity -= amount;
+        this.quantity.addAndGet(-amount.get());
     }
 }

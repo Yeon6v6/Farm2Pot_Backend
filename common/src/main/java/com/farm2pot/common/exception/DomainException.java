@@ -5,9 +5,9 @@ import lombok.Getter;
 @Getter
 public class DomainException extends RuntimeException {
 
-    private final ErrorCode errorCode;
+    private final BusinessErrorCode errorCode;
 
-    public DomainException(ErrorCode errorCode) {
+    public DomainException(BusinessErrorCode errorCode) {
         super(errorCode.getMessage());
         this.errorCode = errorCode;
     }

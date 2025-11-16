@@ -23,7 +23,7 @@ public record ProductResponse(
                 product.getCode(),
                 product.getName(),
                 product.getPrice(),
-                product.getStock() != null ? product.getStock().getQuantity() : 0,
+                product.getStock() != null ? product.getStock().getQuantity().get() : 0,
                 product.getWeight(),
                 product.getCategory(),
                 product.getOrigin(),

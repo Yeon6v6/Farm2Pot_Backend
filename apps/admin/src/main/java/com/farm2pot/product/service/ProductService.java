@@ -1,10 +1,12 @@
 package com.farm2pot.product.service;
 
+import com.farm2pot.common.exception.DomainErrorCode;
 import com.farm2pot.common.exception.BusinessException;
-import com.farm2pot.common.exception.ErrorCode;
 import com.farm2pot.product.controller.dto.*;
 import com.farm2pot.product.entity.Product;
+import com.farm2pot.product.entity.ProductHistory;
 import com.farm2pot.product.entity.Stock;
+import com.farm2pot.product.enums.StockType;
 import com.farm2pot.product.repository.ProductHistoryRepository;
 import com.farm2pot.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +42,7 @@ public class ProductService {
      */
     public ProductResponse getProduct(Long productId) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(DomainErrorCode.PRODUCT_NOT_FOUND));
         return ProductResponse.from(product);
     }
 
@@ -56,7 +59,7 @@ public class ProductService {
 
         // 재고 초기화
         Stock stock = Stock.builder()
-                .quantity(request.initialQty() != null ? request.initialQty() : 0)
+                .quantity(new AtomicInteger(request.initialQty() != null ? request.initialQty() : 0))
                 .build();
 
         // 상품 생성
@@ -86,7 +89,7 @@ public class ProductService {
     @Transactional
     public UpdateProductResponse updateProduct(Long productId, UpdateProductRequst request) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(DomainErrorCode.PRODUCT_NOT_FOUND));
 
         Product updatedProduct = Product.builder()
                 .id(product.getId())
@@ -115,11 +118,55 @@ public class ProductService {
     @Transactional
     public String deleteProduct(Long productId) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(DomainErrorCode.PRODUCT_NOT_FOUND));
 
         productRepository.delete(product);
 
         return LocalDateTime.now().toString();
+    }
+
+    /**
+     * 재고 수량 조정
+     */
+    @Transactional
+    public StockAdjustmentResponse adjustStock(Long productId, StockAdjustmentRequest request) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new BusinessException(DomainErrorCode.PRODUCT_NOT_FOUND));
+
+        int previousQty = product.getStock().getQuantity().get();
+        AtomicInteger adjustmentQty = new AtomicInteger(request.quantity());
+
+        // 재고 조정
+        if (request.adjustmentType() == StockType.INCREASE) {
+            product.getStock().increase(adjustmentQty);
+        } else if (request.adjustmentType() == StockType.DECREASE) {
+            product.getStock().decrease(adjustmentQty);
+        }
+
+        int currentQty = product.getStock().getQuantity().get();
+
+        // 재고 변경 이력 저장
+        ProductHistory history = ProductHistory.builder()
+                .product(product)
+                .adjustmentType(request.adjustmentType())
+                .quantity(request.quantity())
+                .previousQty(previousQty)
+                .currentQty(currentQty)
+                .reason(request.reason())
+                .build();
+
+        productHistoryRepository.save(history);
+
+        return new StockAdjustmentResponse(
+                product.getId(),
+                product.getCode(),
+                product.getName(),
+                previousQty,
+                currentQty,
+                request.quantity(),
+                request.adjustmentType(),
+                LocalDateTime.now()
+        );
     }
 
     /**

@@ -66,4 +66,15 @@ public class ProductController {
     public String deleteProduct(@PathVariable Long productId) {
         return productService.deleteProduct(productId);
     }
+
+    /**
+     * 재고 수량 조정
+     */
+    @PatchMapping("/{productId}")
+    public StockAdjustmentResponse adjustStock(
+            @PathVariable Long productId,
+            @Valid @RequestBody StockAdjustmentRequest request
+    ) {
+        return productService.adjustStock(productId, request);
+    }
 }
