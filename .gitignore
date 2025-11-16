@@ -1,17 +1,47 @@
-﻿# Build directories
+﻿HELP.md
+.gradle
 build/
-**/.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
 
-# IDE files
-.idea/
-**/.idea/
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
 
-# Claude AI files
-.claude/
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
 
-# Log files
+### Environment ###
+.env
+.env.local
+.env.*.local
+*.env
+
+### Logs ###
 *.log
+logs/
+*.log.*
 
-# OS files
-.DS_Store
-Thumbs.db
+### Temporary files ###
+*.tmp
+*.bak
+*.swp
+*~
+
+### VS Code ###
+.vscode/

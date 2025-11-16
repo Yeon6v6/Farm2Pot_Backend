@@ -34,6 +34,7 @@ ext {
     annotationVersion = '3.0.0'
     persistenceVersion = '3.2.0'
     mybatisVersion = '3.5.15'
+    commonsCollectionsVersion = '4.5.0'
 }
 
 subprojects {
@@ -69,6 +70,8 @@ subprojects {
         runtimeOnly 'mysql:mysql-connector-java:8.0.33'
         annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
         annotationProcessor 'org.projectlombok:lombok'
+        implementation 'org.springframework.boot:spring-boot-starter-validation'
+        implementation "org.apache.commons:commons-collections4:$commonsCollectionsVersion"
 
         /** Spring-Doc **/
         // implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: "$springdocVersion"
