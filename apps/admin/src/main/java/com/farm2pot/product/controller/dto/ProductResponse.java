@@ -1,7 +1,5 @@
 package com.farm2pot.product.controller.dto;
 
-import com.farm2pot.product.entity.Product;
-
 import java.time.LocalDateTime;
 
 public record ProductResponse(
@@ -17,19 +15,4 @@ public record ProductResponse(
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {
-    public static ProductResponse from(Product product) {
-        return new ProductResponse(
-                product.getId(),
-                product.getCode(),
-                product.getName(),
-                product.getPrice(),
-                product.getStock() != null ? product.getStock().getQuantity().get() : 0,
-                product.getWeight(),
-                product.getCategory(),
-                product.getOrigin(),
-                null, // TODO: 이미지 처리
-                product.getCreateAt(),
-                product.getUpdateAt()
-        );
-    }
 }

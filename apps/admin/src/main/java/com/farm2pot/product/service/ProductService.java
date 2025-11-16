@@ -5,8 +5,8 @@ import com.farm2pot.common.exception.BusinessException;
 import com.farm2pot.product.controller.dto.*;
 import com.farm2pot.product.entity.Product;
 import com.farm2pot.product.entity.ProductHistory;
-import com.farm2pot.product.entity.Stock;
 import com.farm2pot.product.enums.StockType;
+import com.farm2pot.product.controller.dto.mapper.ProductDtoMapper;
 import com.farm2pot.product.repository.ProductHistoryRepository;
 import com.farm2pot.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @RequiredArgsConstructor
@@ -28,13 +27,14 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final ProductHistoryRepository productHistoryRepository;
+    private final ProductDtoMapper productDtoMapper;
 
     /**
-     * 상품 목록 조회 (QueryDSL 동적 쿼리 사용)
+     * 상품 목록 조회
      */
     public Page<ProductResponse> getProducts(String keyword, String category, String origin, Pageable pageable) {
         Page<Product> products = productRepository.getProducts(keyword, category, origin, pageable);
-        return products.map(ProductResponse::from);
+        return products.map(productDtoMapper::toProductDto);
     }
 
     /**
@@ -43,7 +43,7 @@ public class ProductService {
     public ProductResponse getProduct(Long productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new BusinessException(BusinessErrorCode.PRODUCT_NOT_FOUND));
-        return ProductResponse.from(product);
+        return productDtoMapper.toProductDto(product);
     }
 
     /**
@@ -51,36 +51,24 @@ public class ProductService {
      */
     @Transactional
     public CreateProductResponse createProduct(CreateProductRequst request) {
-        // 상품 코드 생성 (제공되지 않은 경우)
         String productCode = request.code();
         if (productCode == null || productCode.isBlank()) {
             productCode = generateProductCode();
         }
 
-        // 재고 초기화
-        Stock stock = Stock.builder()
-                .quantity(new AtomicInteger(request.initialQty() != null ? request.initialQty() : 0))
-                .build();
-
-        // 상품 생성
-        Product product = Product.builder()
-                .code(productCode)
-                .name(request.name())
-                .price(request.price())
-                .weight(request.weight())
-                .origin(request.origin())
-                .category(request.category())
-                .stock(stock)
-                .build();
+        Product product = Product.create(
+                productCode,
+                request.name(),
+                request.price(),
+                request.weight(),
+                request.origin(),
+                request.category(),
+                request.initialQty()
+        );
 
         Product savedProduct = productRepository.save(product);
 
-        return new CreateProductResponse(
-                savedProduct.getId(),
-                savedProduct.getCode(),
-                savedProduct.getName(),
-                savedProduct.getCreateAt()
-        );
+        return productDtoMapper.toCreateProductDto(savedProduct);
     }
 
     /**
@@ -91,25 +79,16 @@ public class ProductService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new BusinessException(BusinessErrorCode.PRODUCT_NOT_FOUND));
 
-        Product updatedProduct = Product.builder()
-                .id(product.getId())
-                .code(request.code())
-                .name(request.name())
-                .price(request.price())
-                .weight(request.weight())
-                .origin(request.origin())
-                .category(request.category())
-                .stock(product.getStock())
-                .build();
-
-        Product saved = productRepository.save(updatedProduct);
-
-        return new UpdateProductResponse(
-                saved.getId(),
-                saved.getCode(),
-                saved.getName(),
-                saved.getUpdateAt()
+        product.update(
+                request.code(),
+                request.name(),
+                request.price(),
+                request.weight(),
+                request.origin(),
+                request.category()
         );
+
+        return productDtoMapper.toUpdateProductDto(product);
     }
 
     /**
@@ -133,19 +112,16 @@ public class ProductService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new BusinessException(BusinessErrorCode.PRODUCT_NOT_FOUND));
 
-        int previousQty = product.getStock().getQuantity().get();
-        AtomicInteger adjustmentQty = new AtomicInteger(request.quantity());
+        int previousQty = product.getStockQuantity();
 
-        // 재고 조정
         if (request.adjustmentType() == StockType.INCREASE) {
-            product.getStock().increase(adjustmentQty);
+            product.increaseStock(request.quantity());
         } else if (request.adjustmentType() == StockType.DECREASE) {
-            product.getStock().decrease(adjustmentQty);
+            product.decreaseStock(request.quantity());
         }
 
-        int currentQty = product.getStock().getQuantity().get();
+        int currentQty = product.getStockQuantity();
 
-        // 재고 변경 이력 저장
         ProductHistory history = ProductHistory.builder()
                 .product(product)
                 .adjustmentType(request.adjustmentType())
@@ -157,15 +133,12 @@ public class ProductService {
 
         productHistoryRepository.save(history);
 
-        return new StockAdjustmentResponse(
-                product.getId(),
-                product.getCode(),
-                product.getName(),
+        return StockAdjustmentResponse.of(
+                product,
                 previousQty,
                 currentQty,
                 request.quantity(),
-                request.adjustmentType(),
-                LocalDateTime.now()
+                request.adjustmentType()
         );
     }
 
@@ -188,7 +161,7 @@ public class ProductService {
             histories = productHistoryRepository.findByProductId(productId, pageable);
         }
 
-        return histories.map(ProductHistoryResponse::from);
+        return histories.map(productDtoMapper::toProductHistoryDto);
     }
 
     /**
