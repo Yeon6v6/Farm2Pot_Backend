@@ -1,6 +1,6 @@
 package com.farm2pot.product.service;
 
-import com.farm2pot.common.exception.DomainErrorCode;
+import com.farm2pot.common.exception.BusinessErrorCode;
 import com.farm2pot.common.exception.BusinessException;
 import com.farm2pot.product.controller.dto.*;
 import com.farm2pot.product.entity.Product;
@@ -42,7 +42,7 @@ public class ProductService {
      */
     public ProductResponse getProduct(Long productId) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new BusinessException(DomainErrorCode.PRODUCT_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(BusinessErrorCode.PRODUCT_NOT_FOUND));
         return ProductResponse.from(product);
     }
 
@@ -89,7 +89,7 @@ public class ProductService {
     @Transactional
     public UpdateProductResponse updateProduct(Long productId, UpdateProductRequst request) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new BusinessException(DomainErrorCode.PRODUCT_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(BusinessErrorCode.PRODUCT_NOT_FOUND));
 
         Product updatedProduct = Product.builder()
                 .id(product.getId())
@@ -118,7 +118,7 @@ public class ProductService {
     @Transactional
     public String deleteProduct(Long productId) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new BusinessException(DomainErrorCode.PRODUCT_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(BusinessErrorCode.PRODUCT_NOT_FOUND));
 
         productRepository.delete(product);
 
@@ -131,7 +131,7 @@ public class ProductService {
     @Transactional
     public StockAdjustmentResponse adjustStock(Long productId, StockAdjustmentRequest request) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new BusinessException(DomainErrorCode.PRODUCT_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(BusinessErrorCode.PRODUCT_NOT_FOUND));
 
         int previousQty = product.getStock().getQuantity().get();
         AtomicInteger adjustmentQty = new AtomicInteger(request.quantity());
