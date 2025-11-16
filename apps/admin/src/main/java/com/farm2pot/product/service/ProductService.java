@@ -4,6 +4,7 @@ import com.farm2pot.common.exception.BusinessException;
 import com.farm2pot.common.exception.ErrorCode;
 import com.farm2pot.product.controller.dto.*;
 import com.farm2pot.product.entity.Product;
+import com.farm2pot.product.entity.Stock;
 import com.farm2pot.product.repository.ProductHistoryRepository;
 import com.farm2pot.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -37,5 +40,50 @@ public class ProductService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
         return ProductResponse.from(product);
+    }
+
+    /**
+     * 상품 등록
+     */
+    @Transactional
+    public CreateProductResponse createProduct(CreateProductRequst request) {
+        // 상품 코드 생성 (제공되지 않은 경우)
+        String productCode = request.code();
+        if (productCode == null || productCode.isBlank()) {
+            productCode = generateProductCode();
+        }
+
+        // 재고 초기화
+        Stock stock = Stock.builder()
+                .quantity(request.initialQty() != null ? request.initialQty() : 0)
+                .build();
+
+        // 상품 생성
+        Product product = Product.builder()
+                .code(productCode)
+                .name(request.name())
+                .price(request.price())
+                .weight(request.weight())
+                .origin(request.origin())
+                .category(request.category())
+                .stock(stock)
+                .build();
+
+        Product savedProduct = productRepository.save(product);
+
+        return new CreateProductResponse(
+                savedProduct.getId(),
+                savedProduct.getCode(),
+                savedProduct.getName(),
+                "상품이 등록되었습니다",
+                savedProduct.getCreateAt()
+        );
+    }
+
+    /**
+     * 상품 코드 생성
+     */
+    private String generateProductCode() {
+        return "PRD-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 }

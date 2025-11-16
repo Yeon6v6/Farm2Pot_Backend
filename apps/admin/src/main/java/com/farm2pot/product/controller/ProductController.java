@@ -39,4 +39,12 @@ public class ProductController {
     public ProductResponse getProduct(@PathVariable Long productId) {
         return productService.getProduct(productId);
     }
+
+    /**
+     * 상품 등록
+     */
+    @PostMapping
+    public CreateProductResponse createProduct(@Valid @RequestBody CreateProductRequst request) {
+        return productService.createProduct(request);
+    }
 }
