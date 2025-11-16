@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -106,6 +107,19 @@ public class ProductService {
                 saved.getName(),
                 saved.getUpdateAt()
         );
+    }
+
+    /**
+     * 상품 삭제
+     */
+    @Transactional
+    public String deleteProduct(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
+
+        productRepository.delete(product);
+
+        return LocalDateTime.now().toString();
     }
 
     /**
