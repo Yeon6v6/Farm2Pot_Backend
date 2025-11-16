@@ -66,18 +66,18 @@ public class JwtAuthenticationFilter implements WebFilter {
                         return Mono.error(new GatewayException(GatewayErrorCode.INVALID_TOKEN));
                     }
 
-                    String loginId = jwtProvider.getLoginId(token);
+                    String id = jwtProvider.getId(token);
                     List<String> roles = jwtProvider.getRoles(token);
 
                     // 인증 성공 → 헤더에 등록
                     exchange.getRequest().mutate()
-                            .header("X-USER-ID", loginId)
+                            .header("X-USER-ID", id)
                             .build();
 
-                    log.info("[JWT FILTER] Authenticated loginId: {} / Roles: {}", loginId, roles);
+                    log.info("[JWT FILTER] Authenticated Id: {} / Roles: {}", id, roles);
 
                     var authentication = new UsernamePasswordAuthenticationToken(
-                            loginId, null,
+                            id, null,
                             roles.stream().map(SimpleGrantedAuthority::new).toList()
                     );
 

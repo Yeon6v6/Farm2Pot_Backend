@@ -20,6 +20,8 @@ public class QUser extends EntityPathBase<User> {
 
     public static final QUser user = new QUser("user");
 
+    public final ListPath<com.farm2pot.address.entity.Address, com.farm2pot.address.entity.QAddress> addresses = this.<com.farm2pot.address.entity.Address, com.farm2pot.address.entity.QAddress>createList("addresses", com.farm2pot.address.entity.Address.class, com.farm2pot.address.entity.QAddress.class, PathInits.DIRECT2);
+
     public final DatePath<java.util.Date> birthDay = createDate("birthDay", java.util.Date.class);
 
     public final DateTimePath<java.time.LocalDateTime> createdAt = createDateTime("createdAt", java.time.LocalDateTime.class);

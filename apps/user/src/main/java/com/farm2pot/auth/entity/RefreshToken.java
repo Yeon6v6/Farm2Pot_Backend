@@ -28,7 +28,7 @@ public class RefreshToken {
     private String token;
 
     @Column(nullable = false)
-    private String loginId;
+    private Long userId;
 
     @Column(nullable = false)
     private Instant expiryDate;

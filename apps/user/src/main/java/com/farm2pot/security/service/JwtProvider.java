@@ -39,12 +39,12 @@ public class JwtProvider {
     /**
      * Access Token 발급
      */
-    public String generateAccessToken(String loginId, List<String> roles) {
+    public String generateAccessToken(Long id, List<String> roles) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + securityProperties.getRefreshExpiration());
 
         return Jwts.builder()
-                .subject(loginId)
+                .subject(id.toString())
                 .claim("roles", roles)
                 .issuedAt(now)
                 .expiration(expiryDate)
@@ -55,12 +55,12 @@ public class JwtProvider {
     /**
      * Refresh Token 발급
      */
-    public String generateRefreshToken(String loginId) {
+    public String generateRefreshToken(Long id) {
         Date now = new Date();
         Date refreshExpiry = new Date(now.getTime() + securityProperties.getRefreshExpiration());
 
         return Jwts.builder()
-                .subject(loginId)
+                .subject(id.toString())
                 .issuedAt(now)
                 .expiration(refreshExpiry)
                 .signWith(key)
@@ -87,9 +87,9 @@ public class JwtProvider {
     }
 
     /**
-     * 사용자 아이디 추출
+     * 사용자 아이디(PK) 추출
      */
-    public String getLoginId(String token) {
+    public String getId(String token) {
         try {
             return Jwts.parser()
                     .verifyWith((SecretKey) key)

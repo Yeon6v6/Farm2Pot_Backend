@@ -17,8 +17,12 @@ spring:
 
   jpa:
     hibernate:
+#      ddl-auto: create-drop
       ddl-auto: update
-    show-sql: true
+    show-sql: true  # SQL 로그 출력
+    properties:
+      hibernate:
+        format_sql: true # SQL 포맷팅
 
   redis:
     host: localhost
@@ -31,7 +35,7 @@ jwt:
     expiration: 360000   # 1시간 (단위: 밀리초)
     refresh-expiration: 360000 # 테스트를 위해 360000    1209600000  # 2주 (선택)
     whiteList:
-      - /api/user/auth/**
+      - /api/user/public/**
 
 kafka:
   bootstrap-servers: localhost:19092

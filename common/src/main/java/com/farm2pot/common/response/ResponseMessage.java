@@ -24,6 +24,15 @@ public record ResponseMessage<T>(
                 .build();
     }
 
+    // 성공 + 메세지
+    public static <T> ResponseMessage<T> success(String message) {
+        return ResponseMessage.<T>builder()
+                .success(true)
+                .message(message)
+                .data(null)
+                .build();
+    }
+
     // 성공 + 메시지 + 데이터
     public static <T> ResponseMessage<T> success(String message, T data) {
         return ResponseMessage.<T>builder()
@@ -52,7 +61,7 @@ public record ResponseMessage<T>(
     }
 
     // 실패 + 메세지 + 데이터
-    public static <T> ResponseMessage<T> fail(T data, String message) {
+    public static <T> ResponseMessage<T> fail(String message, T data ) {
         return ResponseMessage.<T>builder()
                 .success(false)
                 .message(message)
