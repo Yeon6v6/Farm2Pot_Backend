@@ -75,8 +75,36 @@ public class ProductService {
                 savedProduct.getId(),
                 savedProduct.getCode(),
                 savedProduct.getName(),
-                "상품이 등록되었습니다",
                 savedProduct.getCreateAt()
+        );
+    }
+
+    /**
+     * 상품 수정
+     */
+    @Transactional
+    public UpdateProductResponse updateProduct(Long productId, UpdateProductRequst request) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
+
+        Product updatedProduct = Product.builder()
+                .id(product.getId())
+                .code(request.code())
+                .name(request.name())
+                .price(request.price())
+                .weight(request.weight())
+                .origin(request.origin())
+                .category(request.category())
+                .stock(product.getStock())
+                .build();
+
+        Product saved = productRepository.save(updatedProduct);
+
+        return new UpdateProductResponse(
+                saved.getId(),
+                saved.getCode(),
+                saved.getName(),
+                saved.getUpdateAt()
         );
     }
 

@@ -47,4 +47,15 @@ public class ProductController {
     public CreateProductResponse createProduct(@Valid @RequestBody CreateProductRequst request) {
         return productService.createProduct(request);
     }
+
+    /**
+     * 상품 정보 수정
+     */
+    @PutMapping("/{productId}")
+    public UpdateProductResponse updateProduct(
+            @PathVariable Long productId,
+            @Valid @RequestBody UpdateProductRequst request
+    ) {
+        return productService.updateProduct(productId, request);
+    }
 }
