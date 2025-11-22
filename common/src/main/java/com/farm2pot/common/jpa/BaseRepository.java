@@ -33,7 +33,7 @@ import java.util.Map;
 @Component
 @Slf4j
 public abstract class BaseRepository<E, ID> {
-    @PersistenceContext
+
     protected EntityManager entityManager;
 
     @Getter
@@ -41,10 +41,12 @@ public abstract class BaseRepository<E, ID> {
 
     private JpaEntityInformation<E, ID> entityInformation;
 
-    public EntityManager getEntityManager() {return entityManager;}
+    public EntityManager getEntityManager() { return entityManager; }
+
     /**
      * EntityManager가 주입되면 JPAQueryFactory 초기화
      */
+    @PersistenceContext
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
         this.queryFactory = new JPAQueryFactory(entityManager);
