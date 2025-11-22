@@ -24,9 +24,9 @@ public class ProductController {
      */
     @GetMapping
     public Page<ProductResponse> getProducts(
-            @RequestParam String keyword,
-            @RequestParam String category,
-            @RequestParam String origin,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String origin,
             CustomPageRequest pageRequest
     ) {
         return productService.getProducts(keyword, category, origin, pageRequest.getPageable());
@@ -35,9 +35,9 @@ public class ProductController {
     /**
      * 상품 상세 조회
      */
-    @GetMapping("/{productId}")
-    public ProductResponse getProduct(@PathVariable Long productId) {
-        return productService.getProduct(productId);
+    @GetMapping("/{productCode}")
+    public ProductResponse getProduct(@PathVariable String productCode) {
+        return productService.getProduct(productCode);
     }
 
     /**

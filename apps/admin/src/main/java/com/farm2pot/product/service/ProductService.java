@@ -40,8 +40,8 @@ public class ProductService {
     /**
      * 상품 상세 조회
      */
-    public ProductResponse getProduct(Long productId) {
-        Product product = productRepository.findById(productId)
+    public ProductResponse getProduct(String productCode) {
+        Product product = productRepository.findByCode(productCode)
                 .orElseThrow(() -> new BusinessException(BusinessErrorCode.PRODUCT_NOT_FOUND));
         return productDtoMapper.toProductDto(product);
     }
