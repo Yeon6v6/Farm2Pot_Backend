@@ -1,4 +1,4 @@
-﻿package com.farm2pot.common.http.advice;
+package com.farm2pot.common.http.advice;
 
 import com.farm2pot.common.http.response.ApiResponse;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
