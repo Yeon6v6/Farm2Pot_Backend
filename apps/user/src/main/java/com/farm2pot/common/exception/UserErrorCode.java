@@ -38,4 +38,8 @@ public enum UserErrorCode implements BaseErrorCode {
     private final String code;
     private final String message;
 
+    @Override
+    public HttpStatus getHttpStatus() {
+        return null;
+    }
 }
